@@ -1,0 +1,82 @@
+<!-- BEGIN PAGE BREADCRUMB -->
+<ul class="page-breadcrumb breadcrumb">
+	<li>
+		<a href="#">Home</a><i class="fa fa-circle"></i>
+	</li>
+	<li class="active" data-ng-bind="$state.current.data.pageTitle">
+	</li>
+</ul>
+<!-- END PAGE BREADCRUMB -->
+<!-- BEGIN PAGE CONTENT-->
+<div class="row">
+	<div class="col-md-12">
+		<!-- BEGIN LIST-->
+		<div class="portlet box green">
+			<div class="portlet-title">
+				<div class="caption">
+					<i class="fa  fa-institution"></i>Lista de Clientes/Empresas Cadastradas
+				</div>
+				<div class="tools">
+					<a href="javascript:;" class="collapse">
+					</a>
+				</div>
+			</div>
+			<div class="portlet-body">
+				<a type="button" class="btn btn-success" ng-href="#/empresas_editar/{{empresa.idempresa}}" >Cadastrar Novo Cliente/Empresa</a>
+				<div>
+					<h2>Pesquisar Clientes/Empresas</h2>
+					<input type="text" class="form-control" placeholder="Busca de pelo nome" ng-model="buscaEmpresa">
+				</div>
+				
+				<div id="mensagem-status" style="text-align: left; margin-top: 10px;" ></div>
+				<div class="table-scrollable"  >
+				
+					<table class="table table-hover"  ng-table="tableParams">
+					<thead>
+					<tr>
+						<th> Cód </th>
+						<th> Nome</th>
+						<th> CPF/CNPJ</th>
+						<th> E-mail </th>
+						<th> Tipo </th>
+						<th> Ações </th>
+					</tr>
+					</thead>
+					<tbody ng-repeat="empresa in $data | orderBy: 'idempresa'| filter: buscaEmpresa">
+						<tr>
+							<td>
+								 {{empresa.id}}
+							</td>
+							<td>
+								 {{empresa.nome}}
+							</td>
+							<td>
+								 {{empresa.cpf_cnpj}}
+							</td>
+							<td>
+								 {{empresa.email}}
+							</td>
+							<td>
+								<div ng-switch on="empresa.tipo">
+								    <div ng-switch-when="1">
+								        <span class="label label-sm label-success"> Escritório </span>
+								    </div>
+								    <div ng-switch-default>
+								        <!-- code to render the regular video block -->
+								        <span class="label label-sm label-danger"> Advogado </span>
+								    </div>
+								</div>
+							</td>
+							<td>
+								<a type="button" class="btn btn-primary" ng-href="#/empresas_editar/{{empresa.idusuario}}" >Editar</a>
+								<button class="btn btn-danger" type="button" ng-click="excluir(empresa, empresa.idusuario)">Excluir</button>
+							</td>
+						</tr>
+					</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<!-- END SAMPLE List-->
+	</div>
+</div>

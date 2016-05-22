@@ -24,17 +24,15 @@ class DiligenciasController extends Controller
      */
     public function index()
     {
+        $response = null;
         try{
             $statusCode = 200;
-            $response = [
-                'diligencias'  => []
-            ];
 
             $diligencias = $this->diligencia->orderBy('id','desc')->get();
 
             foreach($diligencias as $model){
 
-                $response['diligencias'][] = [
+                $response[] = [
                     'id' => (int) $model->id,
                     'nome' => $model->nome,
                     'status' => $model->status,
@@ -68,7 +66,7 @@ class DiligenciasController extends Controller
     public function store(Request $request)
     {
         try{
-            return  response()->json(array('success' => true,'diligencia' => $this->diligencia->create($request->all())->toArray()), 200);
+            return  response()->json(array('success' => true, 'retorno' => $this->diligencia->create($request->all())->toArray()), 200);
         }catch (Exception $e){
             return  response()->json(array('success' => false), 400);
         }
@@ -82,6 +80,7 @@ class DiligenciasController extends Controller
      */
     public function show($id)
     {
+        $response = null;
         try{
             $model = $this->diligencia->find($id);
             $statusCode = 200;
@@ -125,7 +124,7 @@ class DiligenciasController extends Controller
     {
         try{
             $this->diligencia->find($id)->update($request->all());
-            return  response()->json(array('success' => true, 'diligencia' => $this->diligencia->find($id)->toArray()), 200);
+            return  response()->json(array('success' => true, 'retorno' => $this->diligencia->find($id)->toArray()), 200);
         }catch (Exception $e){
             return  response()->json(array('success' => false), 400);
         }

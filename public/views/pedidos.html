@@ -1,0 +1,129 @@
+<!-- BEGIN PAGE BREADCRUMB -->
+<ul class="page-breadcrumb breadcrumb">
+	<li>
+		<a href="#">Home</a><i class="fa fa-circle"></i>
+	</li>
+	<li class="active" data-ng-bind="$state.current.data.pageTitle">
+	</li>
+</ul>
+<!-- END PAGE BREADCRUMB -->
+<!-- BEGIN PAGE CONTENT-->
+<div class="row">
+	<div class="col-md-12">
+		<!-- BEGIN FORM -->
+		<div class="portlet box yellow" class="collapse" collapse="!cadastar_proposta">
+			<div class="portlet-title">
+				<div class="caption">
+					<i class="fa  fa-check-circle"></i>Enviar Proposta
+				</div>
+				<div class="tools">
+					<a href="javascript:;" class="collapse">
+					</a>
+				</div>
+			</div>
+			<div class="portlet-body">
+				<div>
+					<form name="formCadastrar" id="form-cadastrar" class="css-form" novalidate>
+						<div class="form-group">
+							<label>Valor da proposta : </label>
+							<input type="text" name="valor_proposta" class="form-control" placeholder="Valor da Proposta" ng-model="object_proposta.valor_proposta" ng-minlength="3" ng-maxlength="200" required>
+						</div>
+					
+						<div ng-show="formCadastrar.nome.$dirty && formCadastrar.$invalid" class="Metronic-alerts alert alert-danger display-hide fade in" style="display: block;">
+							<button data-close="alert" class="close"></button>
+							<ul style="list-style: none;">
+					      		<li ng-show="formCadastrar.nome.$error.required">O campo "Valor" e obrigatório</li>
+					      		<li ng-show="formCadastrar.nome.$error.minlength">O campo "Valor" precisa ter pelo menos 3 caracteres.</li>
+					      		<li ng-show="formCadastrar.nome.$error.maxlength">O campo "Valor" precisa ter no maximo 200 caracteres.</li>
+					      		<li ng-show="formCadastrar.ativo.$error.required">O campo "Ativo" precisa ser selecionado.</li>				      		
+					      	</ul>
+						</div>
+						<button class="btn btn-circle blue" type="button" ng-click="salvar_proposta(object_proposta)" ng-disabled="formCadastrar.$invalid">Cadastrar</button>
+						<button class="btn btn-circle default" type="button" ng-click="cadastar_proposta = false; object_proposta = null;">Cancelar</button>
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<!-- END SAMPLE form-->
+		<!-- BEGIN LIST-->
+		<div class="portlet box green">
+			<div class="portlet-title">
+				<div class="caption">
+					<i class="fa  fa-institution"></i>Lista de Pedidos Cadastradas
+				</div>
+				<div class="tools">
+					<a href="javascript:;" class="collapse">
+					</a>
+				</div>
+			</div>
+			<div class="portlet-body">
+				<a class="btn btn-success" type="button" ng-href="#/pedido_editar/">Cadastrar Novo Pedido</a>
+				
+				<div>
+					<h2>Pesquisar Pedidos</h2>
+					<input type="text" class="form-control" placeholder="Busca de Diligências Pelo Nome" ng-model="busca">
+				</div>
+				<div id="mensagem-status" style="text-align: left; margin-top: 10px;" ></div>
+				<div class="table-scrollable"  >
+					<table class="table table-hover table-bordered"  ng-table="tableParams">
+					<thead>
+						<tr>
+							<th>Cód Pedido </th>
+							<th>Empresa</th>
+							<th>Cidade</th>
+							<th>Valor Mínimo</th>
+							<th>Valor Maximo</th>
+							<th>Diligências</th>
+							<th>Situação</th>
+							<th>Ações </th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="servico in $data | orderBy: '-id' | filter: busca">
+							<td>
+								 {{servico.id}}
+							</td>
+							<td>
+								 {{servico.usuario_cadastro.nome}}
+							</td>
+							<td>
+								 {{servico.cidade.nome}}
+							</td>
+							<td>
+								 {{servico.valor_minimo}}
+							</td>
+							<td>
+								 {{servico.valor_maximo}}
+							</td>
+							<td>
+								<span ng-repeat="diligencias in servico.diligencias">
+								 {{diligencias.nome}}
+								 <br/>
+								</span>
+							</td>
+							<td>
+								<div ng-switch on="servico.finalizado">
+								    <div ng-switch-when="1">
+								        <span class="label label-sm label-success"> Aberto </span>
+								    </div>
+								    <div ng-switch-default>
+								        <!-- code to render the regular video block -->
+								        <span class="label label-sm label-danger"> Finalizado </span>
+								    </div>
+								</div>
+							</td>
+							<td>
+								<a class="btn btn-primary" type="button"  ng-href="#/pedido_editar/{{servico.id}}">Editar</a>
+								<button class="btn btn-danger" type="button" ng-click="excluir(servico, servico.id)">Excluir</button>
+								<button class="btn btn-success" type="button" ng-click="proposta(servico)">Enviar Proposta</button>
+							</td>
+						</tr>
+					</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<!-- END SAMPLE List-->
+	</div>
+</div>

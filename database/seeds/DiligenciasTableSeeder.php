@@ -14,6 +14,6 @@ class DiligenciasTableSeeder extends Seeder
     {
         Diligencia::truncate();
 
-        factory(Diligencia::class,3)->create();
+        factory(Diligencia::class,10)->create();
     }
 }

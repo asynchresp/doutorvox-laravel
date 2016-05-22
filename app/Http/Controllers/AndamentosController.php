@@ -70,7 +70,17 @@ class AndamentosController extends Controller
     public function store(Request $request)
     {
         try{
-            return  response()->json(array('success' => true,'andamento' => $this->andamento->create($request->all())->toArray()), 200);
+            $this->andamento->create($request->all())->toArray();
+            $usuario = \App\Usuario::find($this->andamento->idusuario);
+            $response = [
+                'id' => (int) $this->andamento->id,
+                'usuario' => $usuario,
+                'pedido' => $this->andamento->pedido,
+                'comentario' => $this->andamento->comentario,
+                'status' => $this->andamento->status
+            ];
+
+            return  response()->json(array('success' => true,'retorno' => $response), 200);
         }catch (Exception $e){
             return  response()->json(array('success' => false), 400);
         }
@@ -128,7 +138,15 @@ class AndamentosController extends Controller
     {
         try{
             $this->andamento->find($id)->update($request->all());
-            return  response()->json(array('success' => true, 'andamento' => $this->andamento->find($id)->toArray()), 200);
+            $usuario = \App\Usuario::find($this->andamento->idusuario);
+            $response = [
+                'id' => (int) $this->andamento->id,
+                'usuario' => $usuario,
+                'pedido' => $this->andamento->pedido,
+                'comentario' => $this->andamento->comentario,
+                'status' => $this->andamento->status
+            ];
+            return  response()->json(array('success' => true, 'retorno' => $response), 200);
         }catch (Exception $e){
             return  response()->json(array('success' => false), 400);
         }

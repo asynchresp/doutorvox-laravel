@@ -19,6 +19,7 @@ class CreateUsersTable extends Migration
             $table->string('password', 60);
             $table->string('cpf_cnpj');
             $table->string('telefone');
+            $table->string('residencial');
             $table->string('comercial');
             $table->string('celular');
             $table->integer('tipo');
@@ -26,8 +27,6 @@ class CreateUsersTable extends Migration
             $table->string('bairro');
             $table->integer('idcidade')->unsigned();
             $table->foreign('idcidade')->references('id')->on('cidades');
-            $table->integer('idestado')->unsigned();
-            $table->foreign('idestado')->references('id')->on('estados');
             $table->string('cep');
             $table->rememberToken();
             $table->timestamps();

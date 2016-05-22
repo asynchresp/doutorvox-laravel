@@ -71,7 +71,18 @@ class CandidatosController extends Controller
     public function store(Request $request)
     {
         try{
-            return  response()->json(array('success' => true,'candidato' => $this->candidato->create($request->all())->toArray()), 200);
+            $this->candidato->create($request->all())->toArray();
+            $usuario = \App\Usuario::find($this->candidato->idusuario);
+            $response = [
+                'id' => (int) $this->candidato->id,
+                'usuario' => $usuario,
+                'idusuario' => $this->candidato->idusuario,
+                'idpedido' => $this->candidato->idpedido,
+                'dhproposta' => $this->candidato->dhproposta,
+                'aprovado' => $this->candidato->aprovado
+            ];
+
+            return  response()->json(array('success' => true,'retorno' => $response), 200);
         }catch (Exception $e){
             return  response()->json(array('success' => false), 400);
         }
@@ -129,8 +140,19 @@ class CandidatosController extends Controller
     public function update(Request $request, $id)
     {
         try{
-            $this->candidato->find($id)->update($request->all());
-            return  response()->json(array('success' => true, 'candidato' => $this->candidato->find($id)->toArray()), 200);
+            $model = $this->candidato->find($id);
+            $model->update($request->all());
+            $usuario = \App\Usuario::find($this->candidato->idusuario);
+            $response = [
+                'id' => (int) $model->id,
+                'usuario' => $usuario,
+                'idusuario' => $model->idusuario,
+                'idpedido' => $model->idpedido,
+                'dhproposta' => $model->dhproposta,
+                'aprovado' => $model->aprovado
+            ];
+
+            return  response()->json(array('success' => true, 'candidato' => $response), 200);
         }catch (Exception $e){
             return  response()->json(array('success' => false), 400);
         }
@@ -151,5 +173,14 @@ class CandidatosController extends Controller
         }catch (Exception $e){
             return  response()->json(array('success' => false), 400);
         }
+    }
+
+    function dateTimeFormatEn($pDate){
+        if(!$pDate)
+            return null;
+        list($date, $time) = explode(' ', $pDate);
+        $aux = explode('/', $date);
+        $data = $aux[2].'-'.$aux[1].'-'.$aux[0].' '.$time;
+        return $data ;
     }
 }

@@ -1,0 +1,106 @@
+<!-- BEGIN PAGE BREADCRUMB -->
+<ul class="page-breadcrumb breadcrumb">
+	<li>
+		<a href="#">Home</a><i class="fa fa-circle"></i>
+	</li>
+	<li class="active" data-ng-bind="$state.current.data.pageTitle">
+	</li>
+</ul>
+<!-- END PAGE BREADCRUMB -->
+<!-- BEGIN PAGE CONTENT-->
+<div class="row">
+	<div class="col-md-12">
+		<!-- BEGIN FORM -->
+		<div class="portlet box yellow" class="collapse" collapse="!cadastar">
+			<div class="portlet-title">
+				<div class="caption">
+					<i class="fa  fa-check-circle"></i>Cadastar Novas Pagamentos
+				</div>
+				<div class="tools">
+					<a href="javascript:;" class="collapse">
+					</a>
+				</div>
+			</div>
+		</div>
+
+		<!-- END SAMPLE form-->
+		<!-- BEGIN LIST-->
+		<div class="portlet box green">
+			<div class="portlet-title">
+				<div class="caption">
+					<i class="fa  fa-institution"></i>Lista de Pagamentos Cadastradas
+				</div>
+				<div class="tools">
+					<a href="javascript:;" class="collapse">
+					</a>
+				</div>
+			</div>
+			<div class="portlet-body">
+				<button class="btn btn-success" type="button" ng-click="cadastar = true">Cadastrar Nova Pagamento</button>
+				
+				<div>
+					<h2>Pesquisar Pagamentos</h2>
+					<input type="text" class="form-control" placeholder="Busca de Pagamentos Pelo Nome" ng-model="busca">
+				</div>
+				<div id="mensagem-status" style="text-align: left; margin-top: 10px;" ></div>
+				<div class="table-scrollable"  >
+					<table class="table table-hover table-bordered"  ng-table="tableParams">
+					<thead>
+						<tr>
+							<th>Cód </th>
+							<th>Nome usuário</th>
+							<th>Data Pagamento</th>
+							<th>Data Vencimento</th>
+							<th>Valor</th>
+							<th>Situação</th>
+							<th>metodo_pagamento</th>
+							<th>Ações </th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="pagamento in $data | orderBy: '-id' | filter: busca">
+							<td>
+								 {{pagamento.id}}
+							</td>
+							<td>
+								 {{pagamento.usuario.nome}}
+							</td>
+							<td>
+								 {{pagamento.dtpagamento}}
+							</td>
+							<td>
+								 {{pagamento.dtvencimento}}
+							</td>
+							<td>
+								 {{pagamento.valor}}
+							</td>
+							
+							<td>
+								<div ng-switch on="pagamento.status">
+								    <div ng-switch-when="1">
+								        <span class="label label-sm label-success"> Ativo </span>
+								    </div>
+								    <div ng-switch-default>
+								        <!-- code to render the regular video block -->
+								        <span class="label label-sm label-danger"> Inativo </span>
+								    </div>
+								</div>
+								
+								
+							</td>
+							<td>
+								 {{pagamento.metodo_pagamento}}
+							</td>
+							<td>
+								<!--<button class="btn btn-primary" type="button" ng-click="alterar(pagamento)">Editar</button>-->
+								<button class="btn btn-danger" type="button" ng-click="excluir(pagamento, pagamento.id)">Excluir</button>
+							</td>
+						</tr>
+					</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<!-- END SAMPLE List-->
+	</div>
+</div>

@@ -1,0 +1,122 @@
+<!-- BEGIN PAGE BREADCRUMB -->
+<ul class="page-breadcrumb breadcrumb">
+	<li>
+		<a href="#">Home</a><i class="fa fa-circle"></i>
+	</li>
+	<li class="active" data-ng-bind="$state.current.data.pageTitle">
+	</li>
+</ul>
+<!-- END PAGE BREADCRUMB -->
+<!-- BEGIN PAGE CONTENT-->
+<div class="row">
+	<div class="col-md-12">
+		<!-- BEGIN FORM -->
+		<div class="portlet box yellow" class="collapse" collapse="!cadastar">
+			<div class="portlet-title">
+				<div class="caption">
+					<i class="fa  fa-check-circle"></i>Cadastar Novos Feeds
+				</div>
+				<div class="tools">
+					<a href="javascript:;" class="collapse">
+					</a>
+				</div>
+			</div>
+			<div class="portlet-body">
+				<div>
+					<form name="formCadastrar" id="form-cadastrar" class="css-form" novalidate>
+						<div class="form-group">
+							<label>Nome : </label>
+							<input type="text" name="nome" class="form-control" placeholder="Nome do Feed" ng-model="object_cadastro.nome" ng-minlength="3" ng-maxlength="200" required>
+						</div>						
+						<div class="form-group">
+							<label>Url : </label>
+							<input type="text" name="url" class="form-control" placeholder="Link do feed" ng-model="object_cadastro.url" ng-minlength="3" ng-maxlength="200" required>
+						</div>
+						<div class="form-group">
+							<label>Ativo : </label> 
+							<select name="status" class="form-control input-small" ng-model="object_cadastro.status" required>
+								<option value="1">Ativo</option>
+								<option value="0">Inativo</option>
+							</select>
+						</div>
+						
+						<div ng-show="formCadastrar.nome.$dirty && formCadastrar.$invalid" class="Metronic-alerts alert alert-danger display-hide fade in" style="display: block;">
+							<button data-close="alert" class="close"></button>
+							<ul style="list-style: none;">
+					      		<li ng-show="formCadastrar.nome.$error.required">O campo "Nome" e obrigatório</li>
+					      		<li ng-show="formCadastrar.nome.$error.minlength">O campo "Nome" precisa ter pelo menos 3 caracteres.</li>
+					      		<li ng-show="formCadastrar.nome.$error.maxlength">O campo "Nome" precisa ter no maximo 200 caracteres.</li>
+					      		<li ng-show="formCadastrar.ativo.$error.required">O campo "Ativo" precisa ser selecionado.</li>				      		
+					      	</ul>
+						</div>
+						<button class="btn btn-circle blue" type="button" ng-click="salvar(object_cadastro)" ng-disabled="formCadastrar.$invalid">Cadastrar</button>
+						<button class="btn btn-circle default" type="button" ng-click="cadastar = false; object_cadastro = null;">Cancelar</button>
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<!-- END SAMPLE form-->
+		<!-- BEGIN LIST-->
+		<div class="portlet box green">
+			<div class="portlet-title">
+				<div class="caption">
+					<i class="fa  fa-institution"></i>Lista de Feeds de Notícias Cadastradas
+				</div>
+				<div class="tools">
+					<a href="javascript:;" class="collapse">
+					</a>
+				</div>
+			</div>
+			<div class="portlet-body">
+				<button class="btn btn-success" type="button" ng-click="cadastar = true">Cadastrar Novo Feed</button>
+				
+				<div>
+					<h2>Pesquisar Feeds</h2>
+					<input type="text" class="form-control" placeholder="Busca de Feed Pelo Nome" ng-model="busca">
+				</div>
+				<div id="mensagem-status" style="text-align: left; margin-top: 10px;" ></div>
+				<div class="table-scrollable"  >
+					<table class="table table-hover table-bordered"  ng-table="tableParams">
+					<thead>
+						<tr>
+							<th>Cód </th>
+							<th>Nome</th>
+							<th>Situação </th>
+							<th>Ações </th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="servico in $data | orderBy: '-id' | filter: busca">
+							<td>
+								 {{servico.id}}
+							</td>
+							<td>
+								 {{servico.nome}}
+							</td>
+							<td>
+								<div ng-switch on="servico.status">
+								    <div ng-switch-when="1">
+								        <span class="label label-sm label-success"> Ativo </span>
+								    </div>
+								    <div ng-switch-default>
+								        <!-- code to render the regular video block -->
+								        <span class="label label-sm label-danger"> Inativo </span>
+								    </div>
+								</div>
+								
+								
+							</td>
+							<td>
+								<button class="btn btn-primary" type="button" ng-click="alterar(servico)">Editar</button>
+								<button class="btn btn-danger" type="button" ng-click="excluir(servico, servico.id)">Excluir</button>
+							</td>
+						</tr>
+					</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<!-- END SAMPLE List-->
+	</div>
+</div>

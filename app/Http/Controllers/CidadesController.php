@@ -24,17 +24,15 @@ class CidadesController extends Controller
      */
     public function index()
     {
+        $response = null;
         try{
             $statusCode = 200;
-            $response = [
-                'cidades'  => []
-            ];
 
             $cidades = $this->cidade->orderBy('id','desc')->get();
 
             foreach($cidades as $cidade){
 
-                $response['cidades'][] = [
+                $response[] = [
                     'id' => (int) $cidade->id,
                     'nome' => $cidade->nome,
                     'ativo' => $cidade->ativo,
@@ -68,7 +66,7 @@ class CidadesController extends Controller
     public function store(Request $request)
     {
         try{
-            return  response()->json(array('success' => true,'cidade' => $this->cidade->create($request->all())->toArray()), 200);
+            return  response()->json(array('success' => true,'retorno' => $this->cidade->create($request->all())->toArray()), 200);
         }catch (Exception $e){
             return  response()->json(array('success' => false), 400);
         }
@@ -82,6 +80,7 @@ class CidadesController extends Controller
      */
     public function show($id)
     {
+        $response = null;
         try{
             $cidade = $this->cidade->find($id);
             $statusCode = 200;
@@ -125,7 +124,7 @@ class CidadesController extends Controller
     {
         try{
             $this->cidade->find($id)->update($request->all());
-            return  response()->json(array('success' => true, 'cidade' => $this->cidade->find($id)->toArray()), 200);
+            return  response()->json(array('success' => true, 'retorno' => $this->cidade->find($id)->toArray()), 200);
         }catch (Exception $e){
             return  response()->json(array('success' => false), 400);
         }

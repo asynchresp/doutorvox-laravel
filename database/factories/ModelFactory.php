@@ -15,11 +15,10 @@ $factory->define(App\Usuario::class, function (Faker\Generator $faker) {
     return [
         'nome' => $faker->name,
         'email' => $faker->email,
-        'password' => bcrypt(str_random(10)),
+        'password' => '123456',
         'remember_token' => str_random(10),
     ];
 });
-
 
 
 $factory->define(App\Feed::class, function (Faker\Generator $faker) {
@@ -36,18 +35,10 @@ $factory->define(App\Perfil::class, function (Faker\Generator $faker) {
     ];
 });
 
-$factory->define(App\Estado::class, function (Faker\Generator $faker) {
-    return [
-        'nome' => $faker->name,
-        'uf' => $faker->citySuffix,
-        'ativo' => $faker->boolean()
-    ];
-});
-
 $factory->define(App\Cidade::class, function (Faker\Generator $faker) {
     return [
-        'nome' => $faker->city,
-        'ativo' => $faker->boolean()
+        'cidade' => $faker->city,
+        'estado' => $faker->citySuffix
     ];
 });
 

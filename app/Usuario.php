@@ -53,11 +53,6 @@ class Usuario extends Authenticatable
         return $this->hasMany('App\Candidato','idusuario');
     }
 
-    public function estado()
-    {
-        return $this->belongsTo('App\Estado','idestado');
-    }
-
     public function cidade()
     {
         return $this->belongsTo('App\Cidade','idcidade');

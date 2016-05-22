@@ -1,0 +1,130 @@
+<!-- BEGIN PAGE BREADCRUMB -->
+<ul class="page-breadcrumb breadcrumb hide">
+	<li>
+		<a href="#">Home</a><i class="fa fa-circle"></i>
+	</li>
+	<li class="active">
+		Dashboard
+	</li>
+</ul>
+<!-- END PAGE BREADCRUMB -->
+<!-- BEGIN MAIN CONTENT -->
+<div ng-controller="DashboardController" class="margin-top-10">
+	<div class="row">
+		<div class="col-md-6 col-sm-12">
+			<!-- BEGIN PORTLET-->
+			<div class="portlet light ">
+				<div class="portlet-title">
+					<div class="caption caption-md">
+						<i class="icon-bar-chart font-green-haze hide"></i>
+						<span class="caption-subject font-green-haze bold uppercase">Últimos advogados cadastrados</span>
+					</div>
+				</div>
+				<div class="portlet-body">
+					<table class="table table-hover"  ng-table="tableParams">
+					<thead>
+					<tr>
+						<th> Cód </th>
+						<th> Nome</th>
+						<th> Ações </th>
+					</tr>
+					</thead>
+					<tbody ng-repeat="empresa in lista_empresa">
+						<tr>
+							<td>
+								 {{empresa.id}}
+							</td>
+							<td>
+								 {{empresa.nome}}
+							</td>
+							<td>
+								<a type="button" class="btn btn-primary" ng-href="#/empresas_editar/{{empresa.id}}" >Visualizar ficha</a>
+							</td>
+						</tr>
+					</tbody>
+					</table>
+				</div>
+			</div>
+			<!-- END PORTLET-->
+		</div>
+		<div class="col-md-6 col-sm-12">
+			<!-- BEGIN PORTLET-->
+			<div class="portlet light ">
+				<div class="portlet-title">
+					<div class="caption caption-md">
+						<i class="icon-bar-chart font-green-haze hide"></i>
+						<span class="caption-subject font-green-haze bold uppercase">Últimos pedidos de cadastro</span>
+					</div>
+				</div>
+				<div class="portlet-body">
+					<table class="table table-hover"  ng-table="tableParams">
+					<thead>
+					<tr>
+						<th>Cód Pedido </th>
+						<th>Empresa</th>
+						<th>Cidade</th>
+						<th>Ações </th>
+					</tr>
+					</thead>
+					<tbody ng-repeat="pedido in lista_pedidos">
+						<tr>
+							<td>
+								 {{pedido.id}}
+							</td>
+							<td>
+								 {{pedido.usuario_cadastro.nome}}
+							</td>
+							<td>
+								 {{pedido.cidade.nome}}
+							</td>
+							<td>
+								<a type="button" class="btn btn-primary" ng-href="#/pedido_editar/{{pedido.id}}" >Visualizar</a>
+							</td>
+						</tr>
+					</tbody>
+					</table>					
+				</div>
+			</div>
+			<!-- END PORTLET-->
+		</div>
+	</div>
+	<div class="row" style="visibility: hidden;">
+		<div class="col-md-6 col-sm-12">
+			<!-- BEGIN PORTLET-->
+			<div class="portlet light tasks-widget">
+				<div class="portlet-title">
+					<div class="caption caption-md">
+						<i class="icon-bar-chart font-green-haze hide"></i>
+						<span class="caption-subject font-green-haze bold uppercase">Sugestões</span>
+					</div>
+				</div>
+				<div class="portlet-body">
+					<table class="table table-hover"  ng-table="tableParams">
+					<thead>
+					<tr>
+						<th> Cód </th>
+						<th> Nome </th>
+						<th> Sugestão</th>
+					</tr>
+					</thead>
+					<tbody ng-repeat="sugestao in lista_sugestoes">
+						<tr>
+							<td>
+								 {{sugestao.idsugestao}}
+							</td>
+							<td>
+								 {{sugestao.nome}}
+							</td>
+							<td>
+								 {{sugestao.sugestao}}
+							</td>
+						</tr>
+					</tbody>
+					</table>		
+				</div>
+			</div>
+			<!-- END PORTLET-->
+		</div>
+	</div>
+</div>
+<!-- END MAIN CONTENT -->

@@ -25,17 +25,15 @@ class PagamentosController extends Controller
      */
     public function index()
     {
+        $response = null;
         try{
             $statusCode = 200;
-            $response = [
-                'pagamentos'  => []
-            ];
 
             $data = $this->pagamento->orderBy('id','desc')->get();
 
             foreach($data as $model){
 
-                $response['pagamentos'][] = [
+                $response[] = [
                     'id' => (int) $model->id,
                     'usuario' => $model->usuario,
                     'dtvencimento' => $model->dtvencimento,
@@ -72,7 +70,7 @@ class PagamentosController extends Controller
     public function store(Request $request)
     {
         try{
-            return  response()->json(array('success' => true,'pagamento' => $this->pagamento->create($request->all())->toArray()), 200);
+            return  response()->json(array('success' => true,'retorno' => $this->pagamento->create($request->all())->toArray()), 200);
         }catch (Exception $e){
             return  response()->json(array('success' => false), 400);
         }
@@ -86,6 +84,7 @@ class PagamentosController extends Controller
      */
     public function show($id)
     {
+        $response = null;
         try{
             $model = $this->pagamento->find($id);
             $statusCode = 200;
@@ -132,7 +131,7 @@ class PagamentosController extends Controller
     {
         try{
             $this->pagamento->find($id)->update($request->all());
-            return  response()->json(array('success' => true, 'pagamento' => $this->pagamento->find($id)->toArray()), 200);
+            return  response()->json(array('success' => true, 'retorno' => $this->pagamento->find($id)->toArray()), 200);
         }catch (Exception $e){
             return  response()->json(array('success' => false), 400);
         }

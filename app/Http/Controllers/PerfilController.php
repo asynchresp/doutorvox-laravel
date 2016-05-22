@@ -26,15 +26,12 @@ class PerfilController extends Controller
     {
         try{
             $statusCode = 200;
-            $response = [
-                'perfis'  => []
-            ];
 
             $perfis = $this->perfil->orderBy('id','desc')->get();
 
             foreach($perfis as $perfil){
 
-                $response['perfis'][] = [
+                $response[] = [
                     'id' => (int) $perfil->id,
                     'nome' => $perfil->nome
                 ];
@@ -66,7 +63,7 @@ class PerfilController extends Controller
     public function store(Request $request)
     {
         try{
-            return  response()->json(array('success' => true,'perfil' => $this->perfil->create($request->all())->toArray()), 200);
+            return  response()->json(array('success' => true,'retorno' => $this->perfil->create($request->all())->toArray()), 200);
         }catch (Exception $e){
             return  response()->json(array('success' => false), 400);
         }
@@ -121,7 +118,7 @@ class PerfilController extends Controller
     {
         try{
             $this->perfil->find($id)->update($request->all());
-            return  response()->json(array('success' => true, 'perfil' => $this->perfil->find($id)->toArray()), 200);
+            return  response()->json(array('success' => true, 'retorno' => $this->perfil->find($id)->toArray()), 200);
         }catch (Exception $e){
             return  response()->json(array('success' => false), 400);
         }

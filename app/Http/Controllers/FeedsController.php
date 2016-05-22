@@ -26,17 +26,15 @@ class FeedsController extends Controller
      */
     public function index()
     {
+        $response = null;
         try{
             $statusCode = 200;
-            $response = [
-                'feeds'  => []
-            ];
 
             $feeds = $this->feed->orderBy('id','desc')->get();
 
             foreach($feeds as $feed){
 
-                $response['feeds'][] = [
+                $response[] = [
                     'id' => (int) $feed->id,
                     'url' => $feed->url,
                     'nome' => $feed->nome,
@@ -46,6 +44,8 @@ class FeedsController extends Controller
             }
 
         }catch (Exception $e){
+            echo 'entrando no catch';
+            dd($e->getMessage());
             $statusCode = 400;
         }finally{
             return response()->json($response, $statusCode);
@@ -71,7 +71,7 @@ class FeedsController extends Controller
     public function store(Request $request)
     {
         try{
-            return  response()->json(array('success' => true,'feed' => $this->feed->create($request->all())->toArray()), 200);
+            return  response()->json(array('success' => true,'retorno' => $this->feed->create($request->all())->toArray()), 200);
         }catch (Exception $e){
             return  response()->json(array('success' => false), 400);
         }
@@ -85,6 +85,7 @@ class FeedsController extends Controller
      */
     public function show($id)
     {
+        $response = null;
         try{
             $feed = $this->feed->find($id);
             $statusCode = 200;
@@ -129,7 +130,7 @@ class FeedsController extends Controller
     {
         try{
             $this->feed->find($id)->update($request->all());
-            return  response()->json(array('success' => true, 'feed' => $this->feed->find($id)->toArray()), 200);
+            return  response()->json(array('success' => true, 'retorno' => $this->feed->find($id)->toArray()), 200);
         }catch (Exception $e){
             return  response()->json(array('success' => false), 400);
         }

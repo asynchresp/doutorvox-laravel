@@ -24,17 +24,14 @@ class UsuariosController extends Controller
      */
     public function index()
     {
+        $response = null;
         try{
             $statusCode = 200;
-            $response = [
-                'usuarios'  => []
-            ];
-
             $data = $this->usuario->orderBy('id','desc')->get();
 
             foreach($data as $model){
 
-                $response['usuarios'][] = [
+                $response[] = [
                     'id' => (int) $model->id,
                     'nome' => $model->nome,
                     'email' => $model->email,
@@ -92,6 +89,7 @@ class UsuariosController extends Controller
      */
     public function show($id)
     {
+        $response = null;
         try{
             $model = $this->usuario->find($id);
             $statusCode = 200;
@@ -203,6 +201,44 @@ class UsuariosController extends Controller
             return response()->json($response, $statusCode);
         }
     }
+
+    public function advogadoDashboard()
+    {
+        try{
+            $statusCode = 200;
+            $response = [
+                'usuarios'  => []
+            ];
+
+            $data = $this->usuario->orderBy('id','desc')->get()->where('tipo',0)->take(20);
+
+            foreach($data as $model){
+
+                $response['usuarios'][] = [
+                    'id' => (int) $model->id,
+                    'nome' => $model->nome,
+                    'email' => $model->email,
+                    'cpf_cnpj' => $model->cpf_cnpj,
+                    'telefone' => $model->telefone,
+                    'comercial' => $model->comercial,
+                    'celular' => $model->celular,
+                    'tipo' => $model->tipo,
+                    'logradouro' => $model->logradouro,
+                    'bairro' => $model->bairro,
+                    'cidade' => $model->cidade,
+                    'estado' => $model->estado,
+                    'cep' => $model->cep,
+
+                ];
+            }
+
+        }catch (Exception $e){
+            $statusCode = 400;
+        }finally{
+            return response()->json($response, $statusCode);
+        }
+    }
+
 
 
 
