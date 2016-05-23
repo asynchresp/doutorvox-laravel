@@ -25,7 +25,7 @@ class CreateUsersTable extends Migration
             $table->integer('tipo');
             $table->string('logradouro');
             $table->string('bairro');
-            $table->integer('idcidade')->unsigned();
+            $table->integer('idcidade')->unsigned()->nullable();
             $table->foreign('idcidade')->references('id')->on('cidades');
             $table->string('cep');
             $table->rememberToken();
