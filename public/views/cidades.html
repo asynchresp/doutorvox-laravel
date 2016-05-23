@@ -78,6 +78,7 @@
 						<tr>
 							<th>Cód </th>
 							<th>Cidade</th>
+							<th>UF</th>
 							<th>Situação </th>
 							<th>Ações </th>
 						</tr>
@@ -88,7 +89,10 @@
 								 {{servico.id}}
 							</td>
 							<td>
-								 {{servico.nome}}
+								 {{servico.cidade}}
+							</td>
+							<td>
+								{{servico.estado}}
 							</td>
 							<td>
 								<div ng-switch on="servico.ativo">

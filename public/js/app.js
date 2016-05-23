@@ -93,14 +93,17 @@ MetronicApp.controller('HeaderController', ['$scope','$http', function($scope, $
 
     $scope.logout = function(){
         $http.get('logout').success(function(data){
-            if(data.success){
-                window.location = '/login';
+            if(data == "Unauthorized."){
+                window.location = 'login';
             } else {
                 bootbox.alert(data.ErroMessage, function(result) {
                 });
             }
         }).error(function(data, status, headers, config) {
-            bootbox.alert('Não foi possivel reconhecer seu usuário, favor entrar novamente no sistema.', function(result) {
+            if(data == "Unauthorized."){
+                window.location = 'login';
+            } else
+                bootbox.alert('Não foi possivel reconhecer seu usuário, favor entrar novamente no sistema.', function(result) {
             });
         });
     };

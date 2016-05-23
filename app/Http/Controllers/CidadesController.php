@@ -34,7 +34,8 @@ class CidadesController extends Controller
 
                 $response[] = [
                     'id' => (int) $cidade->id,
-                    'nome' => $cidade->nome,
+                    'cidade' => $cidade->cidade,
+                    'estado' => $cidade->estado,
                     'ativo' => $cidade->ativo,
                     'usuarios' => $cidade->usuarios
                 ];
@@ -86,7 +87,8 @@ class CidadesController extends Controller
             $statusCode = 200;
             $response = [ "cidade" => [
                 'id' => (int) $cidade->id,
-                'nome' => $cidade->nome,
+                'cidade' => $cidade->cidade,
+                'estado' => $cidade->estado,
                 'ativo' => $cidade->ativo,
                 'usuarios' => $cidade->usuarios
             ]];
