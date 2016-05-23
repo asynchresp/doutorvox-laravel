@@ -10,6 +10,21 @@ MetronicApp.controller('PedidoEditarController', function($rootScope, $scope, $f
     {
       $scope.controller_name = controller;
       $scope.label = label;
+
+		$scope.object_cadastro = {
+			id : "" ,
+			status : '',
+			finalizado : '',
+			tipo_pagamento : '',
+			valor_minimo : '',
+			valor_maximo : '',
+			idcidade : '',
+			diligencias : '',
+			avaliacoes : '',
+			candidatos : '',
+		};
+
+		$scope.object_cadastro.andamentos = [];
     };
     
     $scope.loading = true;
@@ -71,21 +86,7 @@ MetronicApp.controller('PedidoEditarController', function($rootScope, $scope, $f
     			exibirMensagemAlert($("#mensagem-status"), 'Não foi possivel encontrar o pedido informada.', 'warning', 'warning');
     		});	
     	} else {
-    		$scope.object_cadastro = {
-    								id : "" ,
-    								status : '',
-    								finalizado : '',
-    								tipo_pagamento : '',
-    								valor_minimo : '',
-    								valor_maximo : '',
-    								idcidade : '',
-    								diligencias : '',
-    								avaliacoes : '',
-    								candidatos : '',
-    								};
-    		
-    		$scope.object_cadastro.andamentos = [];
-    		
+
     		$('#diligencias').select2({
 		        placeholder: "Selecione as diligências do pedido",
 		        allowClear: true
@@ -143,6 +144,8 @@ MetronicApp.controller('PedidoEditarController', function($rootScope, $scope, $f
 	
     $scope.salvar = function(){
 		console.log($scope.object_cadastro);
+		if($scope.object_cadastro.idcidade == "Object")
+			$scope.object_cadastro.idcidade = $scope.object_cadastro.idcidade.id;
 		if(!$scope.object_cadastro.id){
 			$http.post('/pedido/',$scope.object_cadastro).success(function(data){
 				$scope.object_cadastro.id = data.retorno.id;
@@ -180,7 +183,6 @@ MetronicApp.controller('PedidoEditarController', function($rootScope, $scope, $f
 	$scope.salvar_andamento = function(){
 		$scope.object_andamento.idpedido = $scope.object_cadastro.id;
 		console.log($scope.object_andamento);
-		$scope.object_andamento.idusuario = 271;
 		if($scope.object_andamento) {
 			$http.post('/andamento', $scope.object_andamento).success(function (data) {
 				if ($scope.object_cadastro.andamentos.indexOf($scope.object_andamento) < 0) {

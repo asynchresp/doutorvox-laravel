@@ -22,26 +22,15 @@
 |
 */
 
-Route::resource('feed', 'FeedsController');
-Route::resource('noticia', 'NoticiasController');
-Route::resource('menu', 'MenuController');
-Route::resource('perfil', 'PerfilController');
-Route::resource('estado', 'EstadosController');
-Route::resource('cidade', 'CidadesController');
-Route::resource('andamento', 'AndamentosController');
-Route::resource('pedido', 'PedidosController');
-Route::resource('diligencia', 'DiligenciasController');
-Route::resource('usuario', 'UsuariosController');
-Route::resource('pagamento', 'PagamentosController');
-Route::resource('assinatura', 'AssinaturasController');
-Route::resource('avaliacao', 'AvaliacoesController');
-Route::resource('candidato', 'CandidatosController');
+
 
 Route::post('register', 'AccountController@register');
 Route::post('login', 'AccountController@login');
 Route::get('logout', 'AccountController@logout');
 
 Route::get('advogado', 'UsuariosController@advogado');
+Route::get('advogado_dashboard', 'UsuariosController@advogadoDashboard');
+Route::get('pedido_dashboard', 'PedidosController@pedidoDashboard');
 
 Route::group(['prefix' => 'mobile'], function () {
     Route::group(['prefix' => 'usuario'], function () {
@@ -63,6 +52,21 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/', ['middleware' => 'auth', 'uses' => 'IndexController@index', function() {
 
     }]);
+    Route::resource('pedido', 'PedidosController');
+    Route::resource('feed', 'FeedsController');
+    Route::resource('noticia', 'NoticiasController');
+    Route::resource('menu', 'MenuController');
+    Route::resource('perfil', 'PerfilController');
+    Route::resource('estado', 'EstadosController');
+    Route::resource('cidade', 'CidadesController');
+    Route::resource('andamento', 'AndamentosController');
+
+    Route::resource('diligencia', 'DiligenciasController');
+    Route::resource('usuario', 'UsuariosController');
+    Route::resource('pagamento', 'PagamentosController');
+    Route::resource('assinatura', 'AssinaturasController');
+    Route::resource('avaliacao', 'AvaliacoesController');
+    Route::resource('candidato', 'CandidatosController');
     Route::auth();
     Route::get('/home', 'HomeController@index');
 

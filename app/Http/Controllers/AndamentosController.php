@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class AndamentosController extends Controller
 {
@@ -70,14 +71,17 @@ class AndamentosController extends Controller
     public function store(Request $request)
     {
         try{
-            $this->andamento->create($request->all())->toArray();
+            $aDados = $request->all();
+            $aDados['idusuario'] = Auth::user()->id;
+            $this->andamento = $this->andamento->create($aDados);
             $usuario = \App\Usuario::find($this->andamento->idusuario);
             $response = [
                 'id' => (int) $this->andamento->id,
                 'usuario' => $usuario,
                 'pedido' => $this->andamento->pedido,
                 'comentario' => $this->andamento->comentario,
-                'status' => $this->andamento->status
+                'status' => $this->andamento->status,
+                'created_at' => $this->dateTimeFormatBr($this->andamento->created_at)
             ];
 
             return  response()->json(array('success' => true,'retorno' => $response), 200);
@@ -137,7 +141,9 @@ class AndamentosController extends Controller
     public function update(Request $request, $id)
     {
         try{
-            $this->andamento->find($id)->update($request->all());
+            $aDados = $request->all();
+            $aDados['idusuario'] = Auth::user()->id;
+            $this->andamento->find($id)->update($aDados);
             $usuario = \App\Usuario::find($this->andamento->idusuario);
             $response = [
                 'id' => (int) $this->andamento->id,
@@ -167,5 +173,14 @@ class AndamentosController extends Controller
         }catch (Exception $e){
             return  response()->json(array('success' => false), 400);
         }
+    }
+
+    function dateTimeFormatBr($pDate){
+        if(!$pDate)
+            return null;
+        list($date, $time) = explode(' ', $pDate);
+        $aux = explode('-', $date);
+        $data = $aux[2].'/'.$aux[1].'/'.$aux[0].' '.$time;
+        return $data ;
     }
 }

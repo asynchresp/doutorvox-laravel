@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class PedidosController extends Controller
 {
@@ -113,13 +114,24 @@ class PedidosController extends Controller
     public function store(Request $request)
     {
         try{
-            $pedido = $this->pedido->create($request->all());
-
+            $aDados = $request->all();
+            if(is_array($aDados['idcidade']) && $aDados['idcidade'] != null)
+                $aDados['idcidade'] = $aDados['idcidade']['id'];
+            $aDados['finalizado'] = false;
+            $aDados['tipo_pagamento'] = 0;
+            $aDados['idusuario_cadastro'] = Auth::user()->id;
+            $aDados['idusuario_alteracao'] = Auth::user()->id;
+            $pedido = $this->pedido->create($aDados);
             $diligencias = $request->input('diligencias');
+            $aDiligencias = array();
             foreach($diligencias as $diligenciaId)
             {
-                $pedido->diligencias()->attach($diligenciaId);
+                if(is_array($diligenciaId))
+                    $aDiligencias[] = $diligenciaId['id'];
+                else
+                    $aDiligencias[] = $diligenciaId;
             }
+            $pedido->diligencias()->sync($aDiligencias);
             $pedido->save();
 
             return  response()->json(array('success' => true,'retorno' => $pedido->toArray(), 200));
@@ -233,10 +245,22 @@ class PedidosController extends Controller
 
         try{
             $pedido = $this->pedido->find($id);
-
-            $pedido->update($request->all());
+            $aDados = $request->all();
+            $aDados['idusuario_alteracao'] = $request->user()->id;
+            if(is_array($aDados['idcidade']) && $aDados['idcidade'] != null)
+                $aDados['idcidade'] = $aDados['idcidade']['id'];
+            $aDados['idusuario_alteracao'] = Auth::user()->id;
+            $pedido->update($aDados);
             $diligencias = $request->input('diligencias');
-            $pedido->diligencias()->sync($diligencias);
+            $aDiligencias = array();
+            foreach($diligencias as $diligenciaId)
+            {
+                if(is_array($diligenciaId))
+                    $aDiligencias[] = $diligenciaId['id'];
+                else
+                    $aDiligencias[] = $diligenciaId;
+            }
+            $pedido->diligencias()->sync($aDiligencias);
             $pedido->save();
 
 
