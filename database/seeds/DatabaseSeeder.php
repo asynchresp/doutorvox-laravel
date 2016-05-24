@@ -29,9 +29,6 @@ class DatabaseSeeder extends Seeder
         }
        $this->call(CandidatosTableSeeder::class);
 
-
-
-
         // habilitar a verificação de violação ao deletar tabela com chave estrangeira
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }

@@ -36,4 +36,5 @@ class MobileUsuarioController extends Controller
             return response()->json(array('status' => 0), 200)->header('Content-Type','application/json');
         }
     }
+
 }
