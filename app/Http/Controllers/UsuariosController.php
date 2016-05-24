@@ -229,7 +229,7 @@ class UsuariosController extends Controller
                 'usuarios'  => []
             ];
 
-            $data = $this->usuario->orderBy('id','desc')->get()->where('tipo',0)->take(20);
+            $data = $this->usuario->orderBy('id','desc')->get()->where('tipo',2)->take(20);
 
             foreach($data as $model){
 
