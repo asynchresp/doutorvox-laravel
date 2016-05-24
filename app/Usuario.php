@@ -7,7 +7,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class Usuario extends Authenticatable
 {
 
-    protected $fillable =  ['nome','email','password','cpf_cpnj','telefone',
+    protected $fillable =  ['nome','email','password','cpf_cnpj','telefone',
     'comercial','celular','tipo','logradouro','bairro','idcidade','idestado','cep'];
 
     /**
@@ -35,7 +35,7 @@ class Usuario extends Authenticatable
 
     public function diligencias()
     {
-        return $this->belongsToMany('App\Diligencia','usuarios_diligencias');
+        return $this->belongsToMany('App\Diligencia','usuarios_diligencias','idusuario','iddiligencia');
     }
 
     public function pagamentos()

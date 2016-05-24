@@ -195,15 +195,15 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('EmpresaEditar', {
             url: "/empresas_editar/:id",
             templateUrl: "views/empresas_editar.html",
-            data: {pageTitle: 'Clientes/Empresas', pageSubTitle: 'Cadastro de clientes/empresas', controller_php: 'empresas', label:'empresa'},
-            controller: "GeneralPageController",
+            data: {pageTitle: 'Clientes/Empresas', pageSubTitle: 'Cadastro de clientes/empresas', controller_php: 'usuario', label:'empresa'},
+            controller: "EmpresaEditarController",
             resolve: {
                 deps: ['$ocLazyLoad', function($ocLazyLoad) {
                     return $ocLazyLoad.load({
                         name: 'MetronicApp',
                         insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
                         files: [
-                            'js/controllers/GeneralPageController.js',
+                            'js/controllers/EmpresaEditarController.js',
                             'js/scripts/mask.js',
                             'assets/global/plugins/angularjs/plugins/ui-select/select.min.css',
                             'assets/global/plugins/angularjs/plugins/ui-select/select.min.js',

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Cidade extends Model
 {
 
-    protected $fillable =  ['nome','ativo'];
+    protected $fillable =  ['cidade','estado'];
 
     public function usuarios()
     {

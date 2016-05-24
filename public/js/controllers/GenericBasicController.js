@@ -13,7 +13,7 @@ MetronicApp.controller('GenericBasicController', function($rootScope, $scope, $f
 
 	$scope.controller_name = $state.current.data.controller_php;
 	$scope.label = $state.current.data.label;
-
+	$scope.lista = [];
 
 	$http.get($scope.controller_name).success(function(data){
 		$scope.lista = data;
@@ -56,7 +56,7 @@ MetronicApp.controller('GenericBasicController', function($rootScope, $scope, $f
 		if(!$scope.object_cadastro.id){
 			$http.post($scope.controller_name,$scope.object_cadastro).success(function(data){
 				if(data.success) {
-					if ($scope.lista.indexOf($scope.object_cadastro) < 0) {
+					if ($scope.lista != null && $scope.lista.indexOf($scope.object_cadastro) < 0) {
 						$scope.lista.unshift(data.retorno);
 						$scope.tableParams.reload();
 					}
@@ -70,7 +70,7 @@ MetronicApp.controller('GenericBasicController', function($rootScope, $scope, $f
 			});
 		} else {
 			$http.put($scope.controller_name+"/"+$scope.object_cadastro.id,$scope.object_cadastro).success(function(data){
-				if($scope.lista.indexOf($scope.object_cadastro) < 0){
+				if($scope.lista != null && $scope.lista.indexOf($scope.object_cadastro) < 0){
 					$scope.lista.unshift(data.retorno);
 					$scope.tableParams.reload();
 				}

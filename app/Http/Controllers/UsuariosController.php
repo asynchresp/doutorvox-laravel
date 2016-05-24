@@ -75,7 +75,10 @@ class UsuariosController extends Controller
     public function store(Request $request)
     {
         try{
-            return  response()->json(array('success' => true,'usuario' => $this->usuario->create($request->all())->toArray()), 200);
+            $aDados = $request->all();
+            if(is_array($aDados['idcidade']) && $aDados['idcidade'] != null)
+                $aDados['idcidade'] = $aDados['idcidade']['id'];
+            return  response()->json(array('success' => true,'retorno' => $this->usuario->create($aDados)->toArray()), 200);
         }catch (Exception $e){
             return  response()->json(array('success' => false), 400);
         }
@@ -93,7 +96,7 @@ class UsuariosController extends Controller
         try{
             $model = $this->usuario->find($id);
             $statusCode = 200;
-            $response = [ "usuario" => [
+            $response =  [
                 'id' => (int) $model->id,
                 'nome' => $model->nome,
                 'email' => $model->email,
@@ -104,10 +107,23 @@ class UsuariosController extends Controller
                 'tipo' => $model->tipo,
                 'logradouro' => $model->logradouro,
                 'bairro' => $model->bairro,
-                'cidade' => $model->cidade,
                 'estado' => $model->estado,
                 'cep' => $model->cep,
-            ]];
+            ];
+
+            $aDiligencias = array();
+            foreach ($model->diligencias as $diligencia){
+                $aDiligencias[] = $diligencia->id;
+            }
+            if(count($aDiligencias)>0)
+                $response['diligencias'] = join(",", $aDiligencias);
+            else
+                $response['diligencias'] = "";
+
+            if($model->cidade)
+                $response['idcidade'] = $model->cidade->id;
+            else
+                $response['idcidade'] = "";
 
         }catch(Exception $e){
             $response = [
@@ -141,8 +157,11 @@ class UsuariosController extends Controller
     public function update(Request $request, $id)
     {
         try{
-            $this->usuario->find($id)->update($request->all());
-            return  response()->json(array('success' => true, 'usuario' => $this->usuario->find($id)->toArray()), 200);
+            $aDados = $request->all();
+            if(is_array($aDados['idcidade']) && $aDados['idcidade'] != null)
+                $aDados['idcidade'] = $aDados['idcidade']['id'];
+            $this->usuario->find($id)->update($aDados);
+            return  response()->json(array('success' => true, 'retorno' => $this->usuario->find($id)->toArray()), 200);
         }catch (Exception $e){
             return  response()->json(array('success' => false), 400);
         }
