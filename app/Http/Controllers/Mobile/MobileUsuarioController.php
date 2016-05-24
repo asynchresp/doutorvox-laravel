@@ -37,4 +37,9 @@ class MobileUsuarioController extends Controller
         }
     }
 
+    public function registrar(Request $request)
+    {
+
+    }
+
 }
