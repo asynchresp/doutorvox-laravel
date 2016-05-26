@@ -18,10 +18,10 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->string('password', 60);
             $table->string('cpf_cnpj');
-            $table->string('telefone');
-            $table->string('residencial');
-            $table->string('comercial');
-            $table->string('celular');
+            $table->string('telefone')->nullable();
+            $table->string('residencial')->nullable();
+            $table->string('comercial')->nullable();
+            $table->string('celular')->nullable();
             $table->integer('tipo');
             $table->string('logradouro');
             $table->string('bairro');

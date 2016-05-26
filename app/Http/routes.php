@@ -35,6 +35,7 @@ Route::get('pedido_dashboard', 'PedidosController@pedidoDashboard');
 Route::group(['prefix' => 'mobile'], function () {
     Route::group(['prefix' => 'usuario'], function () {
         Route::post('login', 'Mobile\MobileUsuarioController@login');
+        Route::post('registrar', 'Mobile\MobileUsuarioController@registrar');
     });
 });
 
