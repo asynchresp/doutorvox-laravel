@@ -36,8 +36,7 @@ class MobileUsuarioController extends Controller
         {
             return response()->json(array('status' => 1,
                                     'debug' => 'realizou login',
-                                    'msg' => 'Usuário logado com sucesso',
-                                    'usuario' => Auth::user()))
+                                    'msg' => 'Usuário logado com sucesso'))
                                     ->header('Content-Type','application/json');
         }
         else
@@ -73,9 +72,9 @@ class MobileUsuarioController extends Controller
                 else
                 {
                     // precisamos salvar a cidade e pegar o id de retorno para associar ao usuário
-                    $idcidade = $this->cidade->insertGetId(
+                    $idcidade = $this->cidade->create(
                         ['cidade' => $cidade, 'estado' => $estado]
-                    );
+                    )->id;
                 }
             }// erro ao tentar salvar/selecionar no banco
             catch(Exception $e){
@@ -87,7 +86,7 @@ class MobileUsuarioController extends Controller
 
             // adicionando o id da cidade para a requisição
             $request->merge(array('idcidade' => $idcidade));
-            
+
             $validator =  Validator::make($request->all(), [
                 'nome' => 'required|max:255',
                 'email' => 'required|email|max:255|unique:usuarios',
