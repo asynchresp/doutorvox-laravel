@@ -94,7 +94,8 @@ class MobileUsuarioController extends Controller
                 'logradouro' => 'required',
                 'bairro' => 'required',
                 'cep' => 'required',
-                'tipo' => 'required'
+                'tipo' => 'required',
+                'password' => 'required|min:6'
             ]);
 
             // passou na validação
