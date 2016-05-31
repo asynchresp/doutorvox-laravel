@@ -37,6 +37,9 @@ Route::group(['prefix' => 'mobile'], function () {
         Route::post('login', 'Mobile\MobileUsuarioController@login');
         Route::post('registrar', 'Mobile\MobileUsuarioController@registrar');
     });
+    Route::group(['prefix' => 'noticia'], function () {
+        Route::post('obter_noticias', 'Mobile\MobileNoticiaController@obterNoticias');
+    });
 });
 
 
