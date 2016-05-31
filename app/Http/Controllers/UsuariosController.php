@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class UsuariosController extends Controller
 {
@@ -64,6 +65,22 @@ class UsuariosController extends Controller
     public function create()
     {
         //
+    }
+
+    public function get_usuario_logado()
+    {
+        try{
+            $usuario = \App\Usuario::find(Auth::user()->id);
+            $aDados = [
+                "id" => $usuario->id,
+                "nome" => $usuario->nome,
+                "email" => $usuario->email,
+                "tipo_assinatura" => $usuario->tipo_assinatura
+            ];
+            return  response()->json(array('success' => true,'retorno' => $aDados), 200);
+        }catch (Exception $e){
+            return  response()->json(array('success' => false), 400);
+        }
     }
 
     /**

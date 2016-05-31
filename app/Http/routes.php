@@ -64,11 +64,16 @@ Route::group(['middleware' => 'web'], function () {
 
     Route::resource('diligencia', 'DiligenciasController');
     Route::resource('usuario', 'UsuariosController');
+    Route::resource('get_usuario_logado', 'UsuariosController@get_usuario_logado');
     Route::resource('pagamento', 'PagamentosController');
     Route::resource('assinatura', 'AssinaturasController');
     Route::resource('avaliacao', 'AvaliacoesController');
     Route::resource('candidato', 'CandidatosController');
     Route::auth();
     Route::get('/home', 'HomeController@index');
+
+    //Dashboard do usuário
+    Route::get('meus_pedidos/{id}', 'PedidosController@meus_pedidos');
+    Route::get('meu_resumo/{id}', 'PedidosController@meu_resumo');
 
 });

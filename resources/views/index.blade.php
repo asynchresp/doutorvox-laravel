@@ -47,6 +47,7 @@ License: You must have a valid license purchased only from themeforest(the above
     <link href="assets/admin/layout4/css/layout.css" rel="stylesheet" type="text/css"/>
     <link href="assets/admin/layout4/css/themes/light.css" rel="stylesheet" type="text/css" id="style_color"/>
     <link href="assets/admin/layout4/css/custom.css" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="assets/admin/pages/css/angular-block-ui.min.css" />
     <!-- END THEME STYLES -->
 
     <link rel="shortcut icon" href="favicon.ico"/>
@@ -146,6 +147,7 @@ License: You must have a valid license purchased only from themeforest(the above
 <!-- BEGIN APP LEVEL ANGULARJS SCRIPTS -->
 <script src="js/app.js" type="text/javascript"></script>
 <script src="js/directives.js" type="text/javascript"></script>
+<script src="js/scripts/authInterceptorService.js" type="text/javascript"></script>
 <script src="assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
 <!-- END APP LEVEL ANGULARJS SCRIPTS -->
 
@@ -154,6 +156,8 @@ License: You must have a valid license purchased only from themeforest(the above
 <script src="js/scripts/ngtable/ng-table.js" type="text/javascript"></script>
 <script src="assets/admin/layout4/scripts/layout.js" type="text/javascript"></script>
 <script src="assets/admin/layout4/scripts/demo.js" type="text/javascript"></script>
+<script src="assets/admin/pages/scripts/angular-block-ui.min.js"></script>
+<script src="assets/admin/pages/scripts/angular-local-storage.min.js"></script>
 <!-- END APP LEVEL JQUERY SCRIPTS -->
 
 <script type="text/javascript">

@@ -5,7 +5,7 @@ MetronicApp.controller('DashboardController', function($rootScope, $scope, $http
         // initialize core components
         Metronic.initAjax();
     });
-    
+    console.log($scope.usuario_logado);
     $http.get('/advogado_dashboard').success(function(data){
 		$scope.lista_empresa = data.usuarios;
 	}).error(function(data, status, headers, config) {

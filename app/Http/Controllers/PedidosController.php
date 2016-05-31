@@ -287,6 +287,91 @@ class PedidosController extends Controller
         }
     }
 
+    public function meu_resumo($id){
+        $response = null;
+        try{
+            $statusCode = 200;
+            $data = \App\Candidato::where(['idusuario' => $id, 'aprovado' => 1])->orderBy('id','desc')->take(10)->get();
+            $qtdPedidos = 0;
+            $qtdAvalicoes = 0;
+            $nota = 0;
+            foreach($data as $model){
+                $qtdPedidos++;
+                foreach ($model->pedido->avaliacoes as $avalicao){
+                    $nota += $avalicao->nota;
+                    $qtdAvalicoes++;
+                }
+            }
+
+            $response = [
+                'resumo'  => [
+                    'pedidos_realizados' => $qtdPedidos,
+                    'avaliacoes' => $qtdAvalicoes,
+                    'nota' => ($qtdAvalicoes  > 0)?(float)$nota / $qtdAvalicoes : 0
+                ]
+            ];
+
+        }catch (Exception $e){
+            $statusCode = 400;
+        }finally{
+            return response()->json($response, $statusCode);
+        }
+
+    }
+    public function meus_pedidos($id){
+        $response = null;
+        try{
+            $statusCode = 200;
+            $response = [
+                'pedidos'  => []
+            ];
+
+            $data = \App\Candidato::where(['idusuario' => $id, 'aprovado' => 1])->orderBy('id','desc')->take(10)->get();
+
+            foreach($data as $model){
+                $andamentos = $model->pedido->andamentos()->orderBy('updated_at','desc')->take(1)->get();
+                $andamento = null;
+                foreach($andamentos as $and)
+                    $andamento = $and;
+
+                $response['pedidos'][] = [
+                    'id' => (int) $model->pedido->id,
+                    'status' => $model->pedido->status,
+                    'empresa' => $model->pedido->usuarioCadastrouPedido->nome,
+                    'andamento' => ($andamento)?$this->dateTimeFormatBr($andamento->updated_at):"Recém Contratado"
+                ];
+
+            }
+
+            $dataProposta = \App\Candidato::where(['idusuario' => $id, 'aprovado' => 0])->orderBy('id','desc')->take(10)->get();
+
+            foreach($dataProposta as $model){
+                $iStatus = 0;
+                if($model->pedido->status >= 3){
+                    if($model->aprovado)
+                        $iStatus = 1;
+                    else
+                        $iStatus = 2;
+                } else
+                    $iStatus = 0;
+
+                $response['propostas'][] = [
+                    'id' => (int) $model->pedido->id,
+                    'aprovado' => $iStatus,
+                    'empresa' => $model->pedido->usuarioCadastrouPedido->nome,
+                    'valor_proposta' => str_replace(".",",", $model->valor_proposta),
+                    'dhproposta' => $this->dateTimeFormatBr($model->updated_at)
+                ];
+
+            }
+
+        }catch (Exception $e){
+            $statusCode = 400;
+        }finally{
+            return response()->json($response, $statusCode);
+        }
+    }
+
     function dateTimeFormatBr($pDate){
         if(!$pDate)
             return null;

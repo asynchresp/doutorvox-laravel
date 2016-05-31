@@ -11,7 +11,47 @@ var Layout = function() {
 
     //* BEGIN:CORE HANDLERS *//
     // this function handles responsive layout on screen size resize or mobile device rotate.
+    
+    // Handle sidebar menu links
+    var handleMainMenuActiveLink = function(mode, el) {
+        var url = location.hash.toLowerCase();
 
+        var menu = $('.hor-menu');
+
+        if (mode === 'click' || mode === 'set') {
+            el = $(el);
+        } else if (mode === 'match') {
+            menu.find("li > a").each(function() {
+                var path = $(this).attr("href").toLowerCase();
+                // url match condition
+                if (path.length > 1 && url.substr(1, path.length - 1) == path.substr(1)) {
+                    el = $(this);
+                    return;
+                }
+            });
+        }
+
+        if (!el || el.size() == 0) {
+            return;
+        }
+
+        if (el.attr('href').toLowerCase() === 'javascript:;' || el.attr('href').toLowerCase() === '#') {
+            return;
+        }
+
+        // disable active states
+        menu.find('li.active').removeClass('active');
+        menu.find('li > a > .selected').remove();
+        menu.find('li.open').removeClass('open');
+
+        el.parents('li').each(function () {
+            $(this).addClass('active');
+
+            if ($(this).parent('ul.navbar-nav').size() === 1) {
+                $(this).find('> a').append('<span class="selected"></span>');
+            }
+        });
+    };
 
     // Handle sidebar menu links
     var handleSidebarMenuActiveLink = function(mode, el) {
@@ -440,8 +480,8 @@ var Layout = function() {
             handleSidebarMenu(); // handles main menu
             handleSidebarToggler(); // handles sidebar hide/show
 
-            if (Metronic.isAngularJsApp()) {      
-                handleSidebarMenuActiveLink('match'); // init sidebar active links 
+            if (Metronic.isAngularJsApp()) {
+                handleSidebarMenuActiveLink('match'); // init sidebar active links
             }
 
             Metronic.addResizeHandler(handleFixedSidebar); // reinitialize fixed sidebar on window resize
@@ -460,6 +500,10 @@ var Layout = function() {
             this.initSidebar();
             this.initContent();
             this.initFooter();
+        },
+
+        setMainMenuActiveLink: function(mode, el) {
+            handleMainMenuActiveLink(mode, el);
         },
 
         //public function to fix the sidebar and content height accordingly

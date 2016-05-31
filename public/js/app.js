@@ -9,7 +9,9 @@ var MetronicApp = angular.module("MetronicApp", [
     "ui.bootstrap",
     "oc.lazyLoad",
     "ngSanitize",
+    'blockUI',
     "ngTable",
+    'LocalStorageModule',
     "angularFileUpload"
 ]);
 
@@ -77,9 +79,9 @@ MetronicApp.controller('HeaderController', ['$scope','$http', function($scope, $
         Layout.initHeader(); // init header
     });
 
-    /*$http.get('get_usuario_logado').success(function(data){
-        if(data.idusuario){
-            $scope.usuario_logado = data;
+    $http.get('get_usuario_logado').success(function(data){
+        if(data.success){
+            $scope.usuario_logado = data.retorno;
         } else {
             bootbox.alert(data.ErroMessage, function(result) {
                 window.location = '/login';
@@ -89,7 +91,7 @@ MetronicApp.controller('HeaderController', ['$scope','$http', function($scope, $
         bootbox.alert('Não foi possivel reconhecer seu usuário, favor entrar novamente no sistema.', function(result) {
             window.location = '/login';
         });
-    });*/
+    });
 
     $scope.logout = function(){
         $http.get('logout').success(function(data){
@@ -135,16 +137,25 @@ MetronicApp.controller('FooterController', ['$scope', function($scope) {
 }]);
 
 /* Setup Rounting For All Pages */
-MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
+MetronicApp.config(['$stateProvider', '$httpProvider', '$urlRouterProvider', 'localStorageServiceProvider', 'blockUIConfig', function($stateProvider, $httpProvider, $urlRouterProvider, localStorageServiceProvider, blockUIConfig) {
+
+    localStorageServiceProvider
+        .setPrefix('DoutorVox.Web')
+        .setStorageType('localStorage') // localStorage, sessionStorage
+        .setNotify(true, true);
+
+    $httpProvider.interceptors.push('authInterceptorService');
+
+    blockUIConfig.template = '<div class="loader-wrapper"><div class="loader"></div></div>';
 
     // Redirect any unmatched url
-    $urlRouterProvider.otherwise("/dashboard.html");
+    $urlRouterProvider.otherwise("/dashboard");
 
     $stateProvider
 
     // Dashboard
         .state('dashboard', {
-            url: "/dashboard.html",
+            url: "/dashboard",
             templateUrl: "views/dashboard.html",
             data: {pageTitle: 'Dashboard', pageSubTitle: 'estatísticas e relatórios'},
             controller: "DashboardController",
@@ -173,7 +184,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
 
         // Empresa
         .state('Empresa', {
-            url: "/empresas.html",
+            url: "/empresas",
             templateUrl: "views/empresas.html",
             data: {pageTitle: 'Clientes/Empresas', pageSubTitle: 'Lista de clientes/empresas', controller_php: 'usuario', label:'empresa'},
             controller: "GenericBasicController",
@@ -258,7 +269,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
 
         //ServicoPrestadoController
         .state('Servicos Prestado', {
-            url: "/servicos.html",
+            url: "/servicos",
             templateUrl: "views/servicos.html",
             data: {pageTitle: 'Diligências', pageSubTitle: 'Cadastro de Diligências', controller_php: 'diligencia', label:'servicos'},
             controller: "GenericBasicController",
@@ -279,7 +290,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
 
         //Feeds Noticias
         .state('Feeds', {
-            url: "/feeds.html",
+            url: "/feeds",
             templateUrl: "views/feeds.html",
             data: {pageTitle: 'Feeds', pageSubTitle: 'Cadastro de Feeds de Notícias', controller_php: 'feed', label:'feeds'},
             controller: "GenericBasicController",
@@ -299,7 +310,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
 
         //Cidade
         .state('Cidade', {
-            url: "/cidades.html",
+            url: "/cidades",
             templateUrl: "views/cidades.html",
             data: {pageTitle: 'Cidades', pageSubTitle: 'Cadastro de Cidades', controller_php: 'cidade', label:'cidades'},
             controller: "GenericBasicController",
@@ -319,7 +330,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
 
         //Perfil
         .state('Perfil', {
-            url: "/perfils.html",
+            url: "/perfils",
             templateUrl: "views/perfils.html",
             data: {pageTitle: 'Perfils', pageSubTitle: 'Cadastro de Perfil', controller_php: 'perfil', label:'perfils'},
             controller: "GenericBasicController",
@@ -339,7 +350,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
 
         //Pagamentos
         .state('Pagamentos', {
-            url: "/pagamentos.html",
+            url: "/pagamentos",
             templateUrl: "views/pagamentos.html",
             data: {pageTitle: 'Pagamentos', pageSubTitle: 'Cadastro de Pagamentos', controller_php: 'pagamento', label:'pagamento'},
             controller: "GenericBasicController",
@@ -359,7 +370,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
 
         //Pedidos
         .state('Pedidos', {
-            url: "/pedidos.html",
+            url: "/pedidos",
             templateUrl: "views/pedidos.html",
             data: {pageTitle: 'Pedidos', pageSubTitle: 'Cadastro de Pedidos', controller_php: 'pedido', label:'pedidos'},
             controller: "PedidoController",
@@ -375,6 +386,57 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
                     });
                 }]
             }
+        })
+
+        // User Profile
+        .state("profile", {
+            url: "/profile",
+            templateUrl: "views/profile/main.html",
+            data: {pageTitle: 'Perfil', pageSubTitle: 'Painel de Controle'},
+            controller: "UserProfileController",
+            resolve: {
+                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+                        files: [
+                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
+                            'assets/admin/pages/css/profile.css',
+                            'assets/admin/pages/css/tasks.css',
+
+                            'assets/global/plugins/jquery.sparkline.min.js',
+                            'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js',
+
+                            'assets/admin/pages/scripts/profile.js',
+
+                            'js/controllers/UserProfileController.js'
+                        ]
+                    });
+                }]
+            }
+        })
+
+        // User Profile Dashboard
+        .state("profile.dashboard", {
+            url: "/dashboard",
+            templateUrl: "views/profile/dashboard.html",
+            controller: "UserDashboardController",
+            data: {pageTitle: 'Perfil', pageSubTitle: 'Painel de Controle'}
+        })
+
+        // User Profile Account
+        .state("profile.account", {
+            url: "/account",
+            templateUrl: "views/profile/account.html",
+            controller: "AccountController",
+            data: {pageTitle: 'Perfil', pageSubTitle: 'Painel de Controle'}
+        })
+
+        // User Profile Help
+        .state("profile.help", {
+            url: "/help",
+            templateUrl: "views/profile/help.html",
+            data: {pageTitle: 'Perfil', pageSubTitle: 'Painel de Controle'}
         })
 }]);
 
