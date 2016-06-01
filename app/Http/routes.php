@@ -22,7 +22,12 @@
 |
 */
 
-
+Route::get('site', function(){
+    return view('site');
+});
+Route::get('cadastro', function(){
+    return view('cadastro');
+});
 
 Route::post('register', 'AccountController@register');
 Route::post('login', 'AccountController@login');
