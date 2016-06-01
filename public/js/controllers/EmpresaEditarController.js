@@ -66,7 +66,6 @@ MetronicApp.controller('EmpresaEditarController', function($rootScope, $scope, $
 
         if($state.params.id){
             $http.get('/usuario/'+$state.params.id).success(function(data){
-                console.log(data);
                 $scope.object_cadastro = data;
                 if($scope.object_cadastro.diligencias.length > 0)
                     $scope.object_cadastro.diligencias = $scope.object_cadastro.diligencias.split(',');
@@ -154,7 +153,6 @@ MetronicApp.controller('EmpresaEditarController', function($rootScope, $scope, $
     };
 
     $scope.salvar = function(){
-        console.log($scope.object_cadastro);
         if($scope.object_cadastro.idcidade == "Object")
             $scope.object_cadastro.idcidade = $scope.object_cadastro.idcidade.id;
         if(!$scope.object_cadastro.id){

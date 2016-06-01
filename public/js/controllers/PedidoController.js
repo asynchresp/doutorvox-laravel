@@ -1,5 +1,5 @@
 'use strict';
-MetronicApp.controller('PedidoController', function($rootScope, $scope, $filter, $http, $timeout, ngTableParams, $state) {
+MetronicApp.controller('PedidoController', function($rootScope, $scope, $filter, $http, $timeout, ngTableParams, $state, localStorageService) {
     $scope.$on('$viewContentLoaded', function() {   
         // initialize core components
         Metronic.initAjax();
@@ -10,7 +10,7 @@ MetronicApp.controller('PedidoController', function($rootScope, $scope, $filter,
       $scope.controller_name = controller;
       $scope.label = label;
     };
-    
+    $scope.usuario = localStorageService.get('AuthUsuario');
     $scope.controller_name = $state.current.data.controller_php;
     $scope.label = $state.current.data.label;
    
@@ -30,7 +30,7 @@ MetronicApp.controller('PedidoController', function($rootScope, $scope, $filter,
 		$scope.object_cadastro = servico;
 		$scope.object_proposta = {};
 		$scope.object_proposta.idpedido = servico.id;
-		$scope.object_proposta.idusuario = 54;
+		$scope.object_proposta.idusuario = $scope.usuario.id;
 		console.log($scope.object_proposta);
 		$("html, body").animate({ scrollTop: 0 }, "slow");
 	};

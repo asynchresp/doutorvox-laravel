@@ -1,127 +1,171 @@
-<div class="row">
+﻿<div class="row">
 	<div class="col-md-12">
 		<div class="portlet light">
 			<div class="portlet-title tabbable-line">
 				<div class="caption caption-md">
 					<i class="icon-globe theme-font hide"></i>
-					<span class="caption-subject font-blue-madison bold uppercase">Profile Account</span>
+					<span class="caption-subject font-blue-madison bold uppercase">Minha Conta</span>
 				</div>
 				<ul class="nav nav-tabs">
 					<li class="active">
-						<a href="#" data-target="#tab_1_1" data-toggle="tab">Personal Info</a>
+						<a href="#" data-target="#tab_1_1" data-toggle="tab">Dados pessoais</a>
 					</li>
 					<li>
-						<a href="#" data-target="#tab_1_2" data-toggle="tab">Change Avatar</a>
+						<a href="#" data-target="#tab_1_2" data-toggle="tab">Mudar Avatar</a>
 					</li>
 					<li>
-						<a href="#" data-target="#tab_1_3" data-toggle="tab">Change Password</a>
+						<a href="#" data-target="#tab_1_3" data-toggle="tab">Trocar Senha</a>
 					</li>
+					<!--
 					<li>
-						<a href="#" data-target="#tab_1_4" data-toggle="tab">Privacy Settings</a>
-					</li>
+						<a href="#" data-target="#tab_1_4" data-toggle="tab">Configurações de Privacidade</a>
+					</li>-->
 				</ul>
 			</div>
 			<div class="portlet-body">
 				<div class="tab-content">
 					<!-- PERSONAL INFO TAB -->
 					<div class="tab-pane active" id="tab_1_1">
-						<form role="form" action="#">
+						<div id="mensagem-status" style="text-align: left; margin-top: 10px;" ></div>
+						<form name="formCadastrar" id="form-cadastrar" class="css-form" novalidate>
+							<input type="hidden" name="idempresa" id="idempresa" class="form-control" value="{{object_cadastro.idempresa}}">
 							<div class="form-group">
-								<label class="control-label">First Name</label>
-								<input type="text" placeholder="John" class="form-control"/>
-							</div>
-							<div class="form-group">
-								<label class="control-label">Last Name</label>
-								<input type="text" placeholder="Doe" class="form-control"/>
-							</div>
-							<div class="form-group">
-								<label class="control-label">Mobile Number</label>
-								<input type="text" placeholder="+1 646 580 DEMO (6284)" class="form-control"/>
+								<label>Tipo Cliente : *</label>
+								<select name="tipo" class="form-control input-small" ng-model="object_cadastro.tipo" required>
+									<option value="1">Pessoa Física</option>
+									<option value="2">Advogado</option>
+									<option value="3">Escritório</option>
+								</select>
 							</div>
 							<div class="form-group">
-								<label class="control-label">Interests</label>
-								<input type="text" placeholder="Design, Web etc." class="form-control"/>
+								<label>Nome : *</label>
+								<input type="text" class="form-control" placeholder="Nome" ng-model="object_cadastro.nome" required>
 							</div>
 							<div class="form-group">
-								<label class="control-label">Occupation</label>
-								<input type="text" placeholder="Web Developer" class="form-control"/>
+								<label>CPF/CNPJ : </label>
+								<input type="text" class="form-control mask_cnpj" placeholder="CPF/CNPJ" ng-model="object_cadastro.cpf_cnpj">
+							</div>
+							<label>Informações para contao</label>
+							<div class="form-inline form-group">
+								<input type="text" class="form-control mask_phone" placeholder="Telefone" ng-model="object_cadastro.telefone">
+								<input type="text" class="form-control mask_phone" placeholder="Comercial" ng-model="object_cadastro.comercial">
+								<input type="text" class="form-control mask_phone" placeholder="Celular" ng-model="object_cadastro.celular">
 							</div>
 							<div class="form-group">
-								<label class="control-label">About</label>
-								<textarea class="form-control" rows="3" placeholder="We are KeenThemes!!!"></textarea>
+								<label>E-mail : </label>
+								<div class="input-group">
+									<span class="input-group-addon">
+										<i class="fa fa-envelope"></i>
+									</span>
+									<input type="email" placeholder="E-mail" class="form-control" ng-model="object_cadastro.email">
+								</div>
 							</div>
 							<div class="form-group">
-								<label class="control-label">Website Url</label>
-								<input type="text" placeholder="http://www.mywebsite.com" class="form-control"/>
+								<label>Endereço : </label>
+								<input type="text" class="form-control" placeholder="Endereço" ng-model="object_cadastro.logradouro">
 							</div>
-							<div class="margiv-top-10">
-								<a href="#" class="btn green-haze">
-								Save Changes </a>
-								<a href="#" class="btn default">
-								Cancel </a>
+							<div class="form-group">
+								<label>Cidades :</label>
+								<select id="cidades"
+										name="cidades"
+										class="form-control select2"
+										ng-model="object_cadastro.idcidade"
+										ng-options="cidade.cidade + ' (' + (cidade.estado | uppercase) + ')' for cidade in lista_cidades track by cidade.id">
+								</select>
 							</div>
+							<div class="form-inline form-group">
+								<div class="form-group">
+									<label>CEP : </label>
+									<input type="text" class="form-control mask_cep" placeholder="CEP" ng-model="object_cadastro.cep">
+								</div>
+							</div>
+							<div class="form-group">
+								<label>Diligências :</label>
+								<select id="diligencias"
+										multiple="multiple"
+										name="diligencias"
+										class="form-control select2"
+										ng-model="object_cadastro.diligencias"
+										ng-options="diligencias.nome for diligencias in lista_diligencias track by diligencias.id">
+								</select>
+							</div>
+							<div class="form-group">
+								<label>Plano de Assinatura: *</label> 
+								<select name="tipo_assinatura" class="form-control input-small" ng-model="object_cadastro.tipo_assinatura" required>
+									<option value="0">Gratuito</option>
+									<option value="1">Plano 1</option>
+									<option value="2">Plano 2</option>
+									<option value="3">Plano 3</option>
+								</select>
+							</div>
+							
+							<button class="btn btn-circle blue" type="button" ng-click="salvar(object_cadastro)" ng-disabled="formCadastrar.$invalid">Cadastrar</button>
+							<button class="btn btn-danger" type="button" ng-click="excluir(object_cadastro.idusuario)" ng-show="object_cadastro.idusuario">Excluir</button>
+							<a type="button" class="btn btn-primary" ng-href="#/empresas.html" >Voltar</a>
 						</form>
 					</div>
 					<!-- END PERSONAL INFO TAB -->
 					<!-- CHANGE AVATAR TAB -->
 					<div class="tab-pane" id="tab_1_2">
+						<div id="mensagem-status_imagem" style="text-align: left; margin-top: 10px;" ></div>
 						<p>
-							Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod.
+							Altere sua imagem de Perfil.
 						</p>
 						<form action="#" role="form">
 							<div class="form-group">
-								<div class="fileinput fileinput-new" data-provides="fileinput">
-									<div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
-										<img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=no+image" alt=""/>
-									</div>
-									<div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;">
-									</div>
-									<div>
-										<span class="btn default btn-file">
-										<span class="fileinput-new">
-										Select image </span>
-										<span class="fileinput-exists">
-										Change </span>
-										<input type="file" name="...">
-										</span>
-										<a href="#" class="btn default fileinput-exists" data-dismiss="fileinput">
-										Remove </a>
-									</div>
+								<label>Imagem</label>
+								<br />
+								<button type="file" ngf-select="uploadFiles($file, $invalidFiles)"  class="btn btn-primary"
+										accept="image/*" ngf-max-size="1MB">
+									Selecionar imagem
+								</button>
+
+								<button type="button" ng-click="f = null"  class="btn btn-warning" ng-show="f" >
+									Cancelar
+								</button>
+								<br />
+								<label>Visualização</label><br/>
+								<img ngf-thumbnail="f" class="thumb" style="max-width: 300px; max-height: 300px;">
+								<img ng-src="{{urlFoto}}" class="thumb" style="max-width: 300px; max-height: 300px;" ng-show="!f && urlFoto">
+								<br />
+								<div style="font:smaller" class="text-blue">
+									<input type="hidden" value="{{f.name}}" name="imagem_nova" id="imagem_nova"/>
+									{{f.name}} {{errFile.name}} {{errFile.$error}} {{errFile.$errorParam}}
+
+                            <span class="progress" ng-show="f.progress >= 0">
+                                <div style="width:{{f.progress}}%"
+									 ng-bind="f.progress + '%'"></div>
+                            </span>
 								</div>
-								<div class="clearfix margin-top-10">
-									<span class="label label-danger">NOTE! </span>
-									<span>Attached image thumbnail is supported in Latest Firefox, Chrome, Opera, Safari and Internet Explorer 10 only </span>
-								</div>
-							</div>
-							<div class="margin-top-10">
-								<a href="#" class="btn green-haze">
-								Submit </a>
-								<a href="#" class="btn default">
-								Cancel </a>
+								{{errorMsg}}
+								<button type="button" ng-click="enviarImagem()" class="btn btn-primary" ng-show="f">
+									Enviar Nova Imagem
+								</button>
 							</div>
 						</form>
 					</div>
 					<!-- END CHANGE AVATAR TAB -->
 					<!-- CHANGE PASSWORD TAB -->
 					<div class="tab-pane" id="tab_1_3">
+						<div id="mensagem-status_senha" style="text-align: left; margin-top: 10px;" ></div>
 						<form action="#">
 							<div class="form-group">
-								<label class="control-label">Current Password</label>
-								<input type="password" class="form-control"/>
+								<label class="control-label">Senha Atual</label>
+								<input type="password" class="form-control" name="password" ng-model="trocar_senha.password"/>
 							</div>
 							<div class="form-group">
-								<label class="control-label">New Password</label>
-								<input type="password" class="form-control"/>
+								<label class="control-label">Nova Senha</label>
+								<input type="password" class="form-control" name="new_password" ng-model="trocar_senha.new_password"/>
 							</div>
 							<div class="form-group">
-								<label class="control-label">Re-type New Password</label>
-								<input type="password" class="form-control"/>
+								<label class="control-label">Confirmar Nova Senha</label>
+								<input type="password" class="form-control" name="re_password" ng-model="trocar_senha.re_password"/>
 							</div>
 							<div class="margin-top-10">
-								<a href="#" class="btn green-haze">
-								Change Password </a>
+								<a href="#" class="btn green-haze" ng-click="trocarSenha()">
+								Mudar Senha </a>
 								<a href="#" class="btn default">
-								Cancel </a>
+								Cancelar </a>
 							</div>
 						</form>
 					</div>
@@ -186,3 +230,8 @@
 		</div>
 	</div>
 </div>
+<script>/* Init Metronic's core jquery plugins and layout scripts */
+$(document).ready(function() {
+	MaskFormTools.init();
+});
+</script>

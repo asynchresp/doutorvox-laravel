@@ -56,6 +56,9 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/', ['middleware' => 'auth', 'uses' => 'IndexController@index', function() {
 
     }]);
+	Route::get('iniciar', function(){
+		return view('iniciar');
+	});
     Route::resource('pedido', 'PedidosController');
     Route::resource('feed', 'FeedsController');
     Route::resource('noticia', 'NoticiasController');
@@ -78,5 +81,7 @@ Route::group(['middleware' => 'web'], function () {
     //Dashboard do usuário
     Route::get('meus_pedidos/{id}', 'PedidosController@meus_pedidos');
     Route::get('meu_resumo/{id}', 'PedidosController@meu_resumo');
+    Route::put('usuario_senha/{id}', 'UsuariosController@usuario_senha');
+    Route::post('UploadImagePerfil/', 'UsuariosController@UploadImagePerfil');
 
 });

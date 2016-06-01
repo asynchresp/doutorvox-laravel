@@ -12,7 +12,8 @@ var MetronicApp = angular.module("MetronicApp", [
     'blockUI',
     "ngTable",
     'LocalStorageModule',
-    "angularFileUpload"
+    "angularFileUpload",
+    'ngFileUpload'
 ]);
 
 
@@ -48,23 +49,6 @@ MetronicApp.controller('AppController', ['$scope','$http' ,'$rootScope', functio
         //Layout.init(); //  Init entire layout(header, footer, sidebar, etc) on page load if the partials included in server side instead of loading with ng-include directive 
     });
 
-   $scope.verificar_login = function(){
-       /*$http.get('verifica_usuario_logado').success(function(data){
-            if(data.success){
-                setTimeout(function(){$scope.verificar_login();}, 60000);
-            } else {
-                bootbox.alert(data.ErroMessage, function(result) {
-                    window.location = '/login';
-                });
-            }
-        }).error(function(data, status, headers, config) {
-            bootbox.alert('Não foi possivel reconhecer seu usuário, favor entrar novamente no sistema.', function(result) {
-                window.location = '/login';
-            });
-        });*/
-    }
-
-    $scope.verificar_login();
 }]);
 
 /***
@@ -74,25 +58,13 @@ MetronicApp.controller('AppController', ['$scope','$http' ,'$rootScope', functio
  ***/
 
 /* Setup Layout Part - Header */
-MetronicApp.controller('HeaderController', ['$scope','$http', function($scope, $http) {
+MetronicApp.controller('HeaderController', ['$scope','$http', 'localStorageService', function($scope, $http, localStorageService) {
     $scope.$on('$includeContentLoaded', function() {
         Layout.initHeader(); // init header
     });
-
-    $http.get('get_usuario_logado').success(function(data){
-        if(data.success){
-            $scope.usuario_logado = data.retorno;
-        } else {
-            bootbox.alert(data.ErroMessage, function(result) {
-                window.location = '/login';
-            });
-        }
-    }).error(function(data, status, headers, config) {
-        bootbox.alert('Não foi possivel reconhecer seu usuário, favor entrar novamente no sistema.', function(result) {
-            window.location = '/login';
-        });
-    });
-
+	
+	$scope.usuario = localStorageService.get('AuthUsuario');
+	
     $scope.logout = function(){
         $http.get('logout').success(function(data){
             if(data == "Unauthorized."){
@@ -400,6 +372,20 @@ MetronicApp.config(['$stateProvider', '$httpProvider', '$urlRouterProvider', 'lo
                         name: 'MetronicApp',
                         insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
                         files: [
+                            'js/scripts/mask.js',
+                            'assets/global/plugins/angularjs/plugins/ui-select/select.min.css',
+                            'assets/global/plugins/angularjs/plugins/ui-select/select.min.js',
+
+
+                            "assets/global/plugins/select2/select2.min.js",
+                            "assets/global/plugins/datatables/media/js/jquery.dataTables.min.js",
+                            "assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js",
+                            "assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js",
+                            "assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js",
+                            "assets/global/plugins/bootstrap-maxlength/bootstrap-maxlength.min.js",
+                            "assets/global/plugins/bootstrap-touchspin/bootstrap.touchspin.js",
+                            "assets/global/plugins/fancybox/source/jquery.fancybox.pack.js",
+
                             'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css',
                             'assets/admin/pages/css/profile.css',
                             'assets/admin/pages/css/tasks.css',
@@ -441,8 +427,8 @@ MetronicApp.config(['$stateProvider', '$httpProvider', '$urlRouterProvider', 'lo
 }]);
 
 /* Init global settings and run the app */
-MetronicApp.run(["$rootScope", "settings", "$state", function($rootScope, settings, $state) {
-    $rootScope.$state = $state; // state to be accessed from view
+MetronicApp.run(["$rootScope", "settings", "$state", "localStorageService", "$http", function($rootScope, settings, $state, localStorageService, $http) {
+	
 }]);
 
 function paginacao($scope,ngTableParams,arrayPaginacao,porPagina){

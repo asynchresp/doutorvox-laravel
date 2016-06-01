@@ -47,7 +47,7 @@ License: You must have a valid license purchased only from themeforest(the above
 </head>
 <!-- END HEAD -->
 <!-- BEGIN BODY -->
-<body class="login">
+<body class="login" ng-controller="InicialController">
 <!-- BEGIN LOGO -->
 <div class="logo">
     <a href="/login">
@@ -60,9 +60,7 @@ License: You must have a valid license purchased only from themeforest(the above
 </div>
 <!-- END SIDEBAR TOGGLER BUTTON -->
 
-@yield('content')
-
-        <!-- END LOGIN -->
+<!-- END LOGIN -->
 <!-- BEGIN COPYRIGHT -->
 <div class="copyright">
     2016 &copy; Doutor Vox

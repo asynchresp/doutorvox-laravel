@@ -27,7 +27,6 @@ MetronicApp.controller('GenericBasicController', function($rootScope, $scope, $f
 	$scope.alterar = function(index){
 		$scope.cadastar = true;
 		$scope.object_cadastro = index;
-		console.log($scope.object_cadastro);
 		$("html, body").animate({ scrollTop: 0 }, "slow");
 	};
 
@@ -60,7 +59,6 @@ MetronicApp.controller('GenericBasicController', function($rootScope, $scope, $f
 						$scope.lista.unshift(data.retorno);
 						$scope.tableParams.reload();
 					}
-					console.log(data.retorno);
 					$scope.object_cadastro = false;
 					exibirMensagemAlert($("#mensagem-status"), 'Cadastrado com sucesso', 'success', 'check');
 					$scope.cadastar = false;

@@ -22,6 +22,7 @@ class CreateUsersTable extends Migration
             $table->string('residencial')->nullable();
             $table->string('comercial')->nullable();
             $table->string('celular')->nullable();
+            $table->string('imagem_perfil')->nullable();
             $table->integer('tipo');
             $table->string('logradouro');
             $table->string('bairro');

@@ -8,10 +8,18 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Storage;
 
 class UsuariosController extends Controller
 {
     private $usuario;
+	private $tipo_pessoa = array( 1 => "Pessoa F�sica",
+	2 => "Advogado",
+	3 => "Escrit�rio"
+	);
+	
 
     public function __construct(Usuario $usuario)
     {
@@ -46,6 +54,7 @@ class UsuariosController extends Controller
                     'cidade' => $model->cidade,
                     'estado' => $model->estado,
                     'cep' => $model->cep,
+                    'tipo_assinatura' => $model->tipo_assinatura
 
                 ];
             }
@@ -75,7 +84,8 @@ class UsuariosController extends Controller
                 "id" => $usuario->id,
                 "nome" => $usuario->nome,
                 "email" => $usuario->email,
-                "tipo_assinatura" => $usuario->tipo_assinatura
+                "tipo_assinatura" => $usuario->tipo_assinatura,
+                "tipo" => $this->tipo_pessoa[$usuario->tipo]
             ];
             return  response()->json(array('success' => true,'retorno' => $aDados), 200);
         }catch (Exception $e){
@@ -95,7 +105,18 @@ class UsuariosController extends Controller
             $aDados = $request->all();
             if(is_array($aDados['idcidade']) && $aDados['idcidade'] != null)
                 $aDados['idcidade'] = $aDados['idcidade']['id'];
-            return  response()->json(array('success' => true,'retorno' => $this->usuario->create($aDados)->toArray()), 200);
+            $diligencias = $aDados['diligencias'];
+            $this->usuario->create($aDados);
+            $aDiligencias = array();
+            foreach($diligencias as $diligenciaId)
+            {
+                if(is_array($diligenciaId))
+                    $aDiligencias[] = $diligenciaId['id'];
+                else
+                    $aDiligencias[] = $diligenciaId;
+            }
+            $this->usuario->diligencias()->sync($aDiligencias);
+            return  response()->json(array('success' => true,'retorno' => $this->usuario->toArray()), 200);
         }catch (Exception $e){
             return  response()->json(array('success' => false), 400);
         }
@@ -126,6 +147,8 @@ class UsuariosController extends Controller
                 'bairro' => $model->bairro,
                 'estado' => $model->estado,
                 'cep' => $model->cep,
+                'imagem_perfil' => $model->imagem_perfil,
+                'tipo_assinatura' => $model->tipo_assinatura
             ];
 
             $aDiligencias = array();
@@ -177,8 +200,20 @@ class UsuariosController extends Controller
             $aDados = $request->all();
             if(is_array($aDados['idcidade']) && $aDados['idcidade'] != null)
                 $aDados['idcidade'] = $aDados['idcidade']['id'];
-            $this->usuario->find($id)->update($aDados);
-            return  response()->json(array('success' => true, 'retorno' => $this->usuario->find($id)->toArray()), 200);
+            $usuario = $this->usuario->find($id);
+            $usuario->update($aDados);
+            $diligencias = $aDados['diligencias'];
+            $aDiligencias = array();
+            foreach($diligencias as $diligenciaId)
+            {
+                if(is_array($diligenciaId))
+                    $aDiligencias[] = $diligenciaId['id'];
+                else
+                    $aDiligencias[] = $diligenciaId;
+            }
+            $usuario->diligencias()->sync($aDiligencias);
+
+            return  response()->json(array('success' => true, 'retorno' => $usuario->toArray()), 200);
         }catch (Exception $e){
             return  response()->json(array('success' => false), 400);
         }
@@ -236,6 +271,62 @@ class UsuariosController extends Controller
         }finally{
             return response()->json($response, $statusCode);
         }
+    }
+
+    public function UploadImagePerfil(Request $request)
+    {
+        $response = null;
+        try{
+            $statusCode = 200;
+            $aDados = $request->all();
+            $usuario = $this->usuario->find($aDados['Id']);
+            if (Input::hasFile('file')) {
+                $file = Input::file('file');
+                $extension = $file->getClientOriginalExtension();
+                $sNomeArquivo = md5($file->getClientOriginalName().date('dd/mm/yyyy hh:mm:ss')).'.'.$extension;
+                if(Input::file('file')->move(__DIR__ . '/../../../public/fotos_perfil/', $sNomeArquivo)){
+                    $usuario->update(array('imagem_perfil' => $sNomeArquivo));
+                    $response = array('success' => true, 'mensagem' => 'Sua imagem foi enviado com sucesso.', 'imagem'=>$sNomeArquivo);
+                } else {
+                    echo '2';exit;
+                    $response = array('success' => false, 'mensagem' => 'Erro ao enviar imagem ao servidor.');
+                }
+            } else {
+                $response = array('success' => false, 'mensagem' => 'Nenhum arquivo foi encontrado.');
+            }
+        }catch(Exception $e){
+            $response = [
+                "error" => "Erro ao enviar foto."+$e->getMessage()
+            ];
+            $statusCode = 400;
+        }finally{
+            return  response()->json($response, $statusCode);
+        }
+    }
+    public function usuario_senha(Request $request, $id)
+    {
+        $response = null;
+        try{
+            $aDados = $request->all();
+            $model = $this->usuario->find($id);
+            $statusCode = 200;
+
+            if (Hash::check($aDados['password'], $model->password)){
+                $model->update(array('password' => $aDados['new_password']));
+                $response = array('success'=>true);
+            } else {
+                $response = array('success'=>false, 'mensagem' => 'Sua senha antiga e inválida.');
+            }
+
+        }catch(Exception $e){
+            $response = [
+                "error" => "data doesn`t exists"
+            ];
+            $statusCode = 400;
+        }finally{
+            return  response()->json($response, $statusCode);
+        }
+
     }
 
     public function advogadoDashboard()
