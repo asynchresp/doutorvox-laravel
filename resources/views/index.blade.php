@@ -145,11 +145,11 @@ License: You must have a valid license purchased only from themeforest(the above
 
 
 <!-- BEGIN APP LEVEL ANGULARJS SCRIPTS -->
-<script src="js/app.js" type="text/javascript"></script>
+<script src="js/app.js?v=10" type="text/javascript"></script>
 <script src="js/directives.js" type="text/javascript"></script>
 <script src="js/scripts/authInterceptorService.js" type="text/javascript"></script>
-<script src="js/Scripts/ng-file-upload.js"></script>
-<script src="js/Scripts/ng-file-upload-shim.js"></script>
+<script src="js/scripts/ng-file-upload.js"></script>
+<script src="js/scripts/ng-file-upload-shim.js"></script>
 <script src="assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
 <!-- END APP LEVEL ANGULARJS SCRIPTS -->
 
