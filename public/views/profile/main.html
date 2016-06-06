@@ -18,7 +18,8 @@
 			<div class="portlet light profile-sidebar-portlet">
 				<!-- SIDEBAR USERPIC -->
 				<div class="profile-userpic">
-					<img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Sem+Foto" class="img-responsive" alt=""/>
+					<img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=Sem+Foto" class="img-responsive" alt="" ng-show="!fotoPerfil"/>
+					<img ng-src="{{fotoPerfil}}" class="img-responsive" alt="" ng-show="fotoPerfil"/>
 				</div>
 				<!-- END SIDEBAR USERPIC -->
 				<!-- SIDEBAR USER TITLE -->

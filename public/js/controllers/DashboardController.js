@@ -1,9 +1,15 @@
 'use strict';
 
-MetronicApp.controller('DashboardController', function($rootScope, $scope, $http, $timeout) {
+MetronicApp.controller('DashboardController', function($rootScope, $scope, $http, $timeout, localStorageService) {
     $scope.$on('$viewContentLoaded', function() {   
         // initialize core components
         Metronic.initAjax();
+		var usuario = localStorageService.get('AuthUsuario');
+
+		// Redirect any unmatched url
+		if(usuario.perfil == constPerfilAdvogado){
+			window.location = "#/profile/dashboard";
+		}
     });
 
     $http.get('/advogado_dashboard').success(function(data){

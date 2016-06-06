@@ -6,22 +6,44 @@
 	<!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
 	<!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
 	<!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-	<ul class="page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200" ng-class="{'page-sidebar-menu-closed': settings.layout.pageSidebarClosed}">
+	<ul class="page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200" ng-class="{'page-sidebar-menu-closed': settings.layout.pageSidebarClosed}" ng-show="usuario.perfil == 0">
 		<li class="heading">
 			<h3>GENERAL</h3>
 		</li>
 		<li class="start">
-			<a href="#/dashboard.html">
+			<a href="#/dashboard">
 			<i class="icon-home"></i>
 			<span class="title">Dashboard</span>
 			</a>
 		</li>
 	</ul>
-	<ul  ng-repeat="menu in menus | orderBy: 'ordem'" class="page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200" ng-class="{'page-sidebar-menu-closed': settings.layout.pageSidebarClosed}">
+	<ul  ng-repeat="menu in menus | orderBy: 'ordem'" class="page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200" ng-class="{'page-sidebar-menu-closed': settings.layout.pageSidebarClosed}"  ng-show="usuario.perfil == 0">
 		<li>
 			<a href="#{{menu.link}}">
 				<i class="{{menu.icone}}"></i>
 				<span class="title">{{menu.nome}}</span>
+			</a>
+		</li>
+	</ul>
+	<!-- END SIDEBAR MENU -->
+	
+	<!-- ADVOGADO / Pessoa Fisica -->
+	<ul class="page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200" ng-class="{'page-sidebar-menu-closed': settings.layout.pageSidebarClosed}" ng-show="usuario.perfil == 2">
+		<li class="heading">
+			<h3>GENERAL</h3>
+		</li>
+		<li class="start">
+			<a href="#/profile/dashboard">
+			<i class="icon-home"></i>
+			<span class="title">Dashboard</span>
+			</a>
+		</li>
+	</ul>
+	<ul  class="page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200" ng-class="{'page-sidebar-menu-closed': settings.layout.pageSidebarClosed}"  ng-show="usuario.perfil == 2">
+		<li>
+			<a href="#/pesquisar_pedidos">
+				<i class="icon-basket"></i>
+				<span class="title">Pesquisa de Pedidos</span>
 			</a>
 		</li>
 	</ul>

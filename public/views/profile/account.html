@@ -28,22 +28,16 @@
 					<div class="tab-pane active" id="tab_1_1">
 						<div id="mensagem-status" style="text-align: left; margin-top: 10px;" ></div>
 						<form name="formCadastrar" id="form-cadastrar" class="css-form" novalidate>
-							<input type="hidden" name="idempresa" id="idempresa" class="form-control" value="{{object_cadastro.idempresa}}">
-							<div class="form-group">
-								<label>Tipo Cliente : *</label>
-								<select name="tipo" class="form-control input-small" ng-model="object_cadastro.tipo" required>
-									<option value="1">Pessoa Física</option>
-									<option value="2">Advogado</option>
-									<option value="3">Escritório</option>
-								</select>
-							</div>
+							<input type="hidden" name="idempresa" id="idempresa" class="form-control" value="{{object_cadastro.tipo}}" ng-model="object_cadastro.tipo">
 							<div class="form-group">
 								<label>Nome : *</label>
 								<input type="text" class="form-control" placeholder="Nome" ng-model="object_cadastro.nome" required>
 							</div>
 							<div class="form-group">
-								<label>CPF/CNPJ : </label>
-								<input type="text" class="form-control mask_cnpj" placeholder="CPF/CNPJ" ng-model="object_cadastro.cpf_cnpj">
+								<label ng-show="object_cadastro.tipo == 2 || object_cadastro.tipo == 1">CPF : </label>
+								<label ng-show="object_cadastro.tipo == 3">CNPJ : </label>
+								<input type="text" class="form-control mask_cpf" ng-model="cpf"  ng-show="object_cadastro.tipo == 2 || object_cadastro.tipo == 1">
+								<input type="text" class="form-control mask_cnpj" ng-model="cnpj" ng-show="object_cadastro.tipo == 3">
 							</div>
 							<label>Informações para contao</label>
 							<div class="form-inline form-group">

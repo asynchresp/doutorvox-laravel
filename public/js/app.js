@@ -16,6 +16,10 @@ var MetronicApp = angular.module("MetronicApp", [
     'ngFileUpload'
 ]);
 
+var constPerfilAdvogado = 2;
+var constPerfilAdmin = 0;
+var constPerfilPessoaFisica = 1;
+var constPerfilEscritorio = 3;
 
 /* Configure ocLazyLoader(refer: https://github.com/ocombe/ocLazyLoad) */
 MetronicApp.config(['$ocLazyLoadProvider', function($ocLazyLoadProvider) {
@@ -84,14 +88,17 @@ MetronicApp.controller('HeaderController', ['$scope','$http', 'localStorageServi
 }]);
 
 /* Setup Layout Part - Sidebar */
-MetronicApp.controller('SidebarController', ['$scope','$http', function($scope,$http) {
+MetronicApp.controller('SidebarController', ['$scope','$http', 'localStorageService', function($scope, $http, localStorageService) {
     $scope.$on('$includeContentLoaded', function() {
         Layout.initSidebar(); // init sidebar
     });
-
-    $http.get('menu').success(function(data){
-        $scope.menus = data.menus;
-    });
+	
+	$scope.usuario = localStorageService.get('AuthUsuario');
+	if($scope.usuario.perfil == constPerfilAdmin){
+		$http.get('menu/').success(function(data){
+			$scope.menus = data.menus;
+		});
+	}
 }]);
 
 /* Setup Layout Part - Sidebar */
@@ -120,8 +127,7 @@ MetronicApp.config(['$stateProvider', '$httpProvider', '$urlRouterProvider', 'lo
 
     blockUIConfig.template = '<div class="loader-wrapper"><div class="loader"></div></div>';
 
-    // Redirect any unmatched url
-    $urlRouterProvider.otherwise("/dashboard");
+	$urlRouterProvider.otherwise("/dashboard");
 
     $stateProvider
 

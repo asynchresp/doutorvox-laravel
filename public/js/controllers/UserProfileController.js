@@ -11,7 +11,10 @@ MetronicApp.controller('UserProfileController', function($rootScope, $scope, $ht
         };
         $rootScope.settings.layout.pageSidebarClosed = true;
 		$scope.usuario = localStorageService.get('AuthUsuario');
-		
+		if($scope.usuario.imagem_perfil)
+			$scope.fotoPerfil = '/fotos_perfil/'+$scope.usuario.imagem_perfil;
+		else
+			$scope.fotoPerfil = "";
         var authData = localStorageService.get('ResumoProfile');
         if (authData) {
             $scope.resumo = authData;
@@ -51,6 +54,8 @@ MetronicApp.controller('AccountController', function($rootScope, $scope, $http, 
     {
         $scope.controller_name = controller;
         $scope.label = label;
+        $scope.cpf = "";
+        $scope.cnpj = "";
 
         $scope.object_cadastro = {
             id : "" ,
@@ -112,7 +117,11 @@ MetronicApp.controller('AccountController', function($rootScope, $scope, $http, 
                 $scope.object_cadastro = data;
                 if($scope.object_cadastro.diligencias.length > 0)
                     $scope.object_cadastro.diligencias = $scope.object_cadastro.diligencias.split(',');
-
+				if($scope.object_cadastro.tipo == constPerfilEscritorio)			
+					$scope.cnpj = $scope.object_cadastro.cpf_cnpj;
+				else
+					$scope.cpf = $scope.object_cadastro.cpf_cnpj;
+					
                 $('#diligencias').select2({
                     placeholder: "Selecione as diligências do pedido",
                     allowClear: true
@@ -152,6 +161,10 @@ MetronicApp.controller('AccountController', function($rootScope, $scope, $http, 
     $scope.salvar = function(){
         if($scope.object_cadastro.idcidade == "Object")
             $scope.object_cadastro.idcidade = $scope.object_cadastro.idcidade.id;
+		if($scope.object_cadastro.tipo == constPerfilEscritorio)			
+			$scope.object_cadastro.cpf_cnpj = $scope.cnpj;
+		else
+			$scope.object_cadastro.cpf_cnpj = $scope.cpf;
         if($scope.object_cadastro.id){
             $http.put('/usuario/'+$scope.object_cadastro.id,$scope.object_cadastro).success(function(data){
                 $scope.object_cadastro.id = data.retorno.id;
@@ -205,6 +218,8 @@ MetronicApp.controller('AccountController', function($rootScope, $scope, $http, 
                 if (response.data.success) {
                     $scope.uploadRealizado = true;
                     $scope.urlFoto = '/fotos_perfil/'+response.data.imagem;
+					$scope.usuario.imagem_perfil = response.data.imagem;
+					localStorageService.set('AuthUsuario', $scope.usuario);
                     exibirMensagemAlert($("#mensagem-status_imagem"), "Sua imagem foi enviada com sucesso.", 'success', 'success');
                 } else
                     exibirMensagemAlert($("#mensagem-status_imagem"), "Erro ao enviar sua imagem.", 'danger', 'danger');

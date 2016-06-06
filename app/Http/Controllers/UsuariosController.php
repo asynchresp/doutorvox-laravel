@@ -85,6 +85,8 @@ class UsuariosController extends Controller
                 "nome" => $usuario->nome,
                 "email" => $usuario->email,
                 "tipo_assinatura" => $usuario->tipo_assinatura,
+                "imagem_perfil" => $usuario->imagem_perfil,
+                "perfil" => $usuario->tipo,
                 "tipo" => $this->tipo_pessoa[$usuario->tipo]
             ];
             return  response()->json(array('success' => true,'retorno' => $aDados), 200);
@@ -284,8 +286,12 @@ class UsuariosController extends Controller
                 $file = Input::file('file');
                 $extension = $file->getClientOriginalExtension();
                 $sNomeArquivo = md5($file->getClientOriginalName().date('dd/mm/yyyy hh:mm:ss')).'.'.$extension;
-                if(Input::file('file')->move(__DIR__ . '/../../../public/fotos_perfil/', $sNomeArquivo)){
+                if(Input::file('file')->move(public_path() . '/fotos_perfil/', $sNomeArquivo)){
+					$sNomeAntigo = $usuario->imagem_perfil;
                     $usuario->update(array('imagem_perfil' => $sNomeArquivo));
+					/*if($sNomeAntigo != null && $sNomeAntigo != "" && File::exists(__DIR__ . '/../../../public/fotos_perfil/'.sNomeAntigo)){
+						File::delete(__DIR__ . '/../../../public/fotos_perfil/'.sNomeAntigo);
+					}*/
                     $response = array('success' => true, 'mensagem' => 'Sua imagem foi enviado com sucesso.', 'imagem'=>$sNomeArquivo);
                 } else {
                     echo '2';exit;

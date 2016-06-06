@@ -10,11 +10,20 @@ MetronicApp.controller('InicialController', ['$rootScope', '$scope', 'settings',
     	// initialize core components
     	Metronic.initAjax();
     });
+	
+	var constPerfilAdvogado = 2;
+	var constPerfilAdmin = 0;
+	var constPerfilPessoaFisica = 1;
+	var constPerfilEscritorio = 3;
+	
 	$http.get('get_usuario_logado').success(function(data){
         if(data.success){
 			$rootScope.$state = $state; // state to be accessed from view
 			localStorageService.set('AuthUsuario', data.retorno);
-			window.location = '/';
+			if(data.retorno.perfil == constPerfilAdvogado){
+				window.location = "/#/profile/dashboard";
+			} else
+				window.location = '/';
         } else {
             bootbox.alert(data.ErroMessage, function(result) {
                 window.location = '/login';
