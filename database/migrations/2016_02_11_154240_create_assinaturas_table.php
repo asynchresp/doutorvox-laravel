@@ -15,7 +15,7 @@ class CreateAssinaturasTable extends Migration
         Schema::create('assinaturas', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('idusuario')->unsigned();
-            $table->foreign('idusuario')->references('id')->on('usuarios')->cascade();
+            $table->foreign('idusuario')->references('id')->on('usuarios')->onDelete('cascade');
             $table->tinyInteger('tipo_assinatura');
             $table->date('dtvencimento');
             $table->date('dtadesao');

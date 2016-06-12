@@ -15,9 +15,9 @@ class CreateCandidatosTable extends Migration
         Schema::create('candidatos', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('idusuario')->unsigned();
-            $table->foreign('idusuario')->references('id')->on('usuarios');
+            $table->foreign('idusuario')->references('id')->on('usuarios')->onDelete('cascade');
             $table->integer('idpedido')->unsigned();
-            $table->foreign('idpedido')->references('id')->on('usuarios');
+            $table->foreign('idpedido')->references('id')->on('pedidos')->onDelete('cascade');
             $table->dateTime('dhproposta');
             $table->decimal('valor_proposta',10,2);
             $table->tinyInteger('aprovado');

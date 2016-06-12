@@ -20,9 +20,9 @@ class CreatePedidosTable extends Migration
             $table->integer('idcidade')->unsigned();
             $table->foreign('idcidade')->references('id')->on('cidades');
             $table->integer('idusuario_cadastro')->unsigned();
-            $table->foreign('idusuario_cadastro')->references('id')->on('usuarios');
+            $table->foreign('idusuario_cadastro')->references('id')->on('usuarios')->onDelete('cascade');
             $table->integer('idusuario_alteracao')->unsigned();
-            $table->foreign('idusuario_alteracao')->references('id')->on('usuarios');
+            $table->foreign('idusuario_alteracao')->references('id')->on('usuarios')->onDelete('cascade');
             $table->tinyInteger('finalizado');
             $table->tinyInteger('tipo_pagamento');
             $table->timestamps();

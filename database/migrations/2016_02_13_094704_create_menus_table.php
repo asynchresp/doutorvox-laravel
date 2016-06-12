@@ -15,7 +15,7 @@ class CreateMenusTable extends Migration
         Schema::create('menus', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('idpai')->unsigned();
-            $table->foreign('idpai')->references('id')->on('menus')->cascade();
+            $table->foreign('idpai')->references('id')->on('menus')->onDelete('cascade');
             $table->string('nome');
             $table->text('link');
             $table->string('icone');

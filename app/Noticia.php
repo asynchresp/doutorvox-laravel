@@ -9,6 +9,10 @@ class Noticia extends Model
 
     protected $fillable =  ['idfeed', 'idusuario', 'titulo', 'resumo', 'dtnoticia', 'descricao'];
 
+    protected $hidden = [
+        'idfeed', 'idusuario','created_at','update_at'
+    ];
+
     public function usuario()
     {
         return $this->belongsTo(Usuario::class,'idusuario');

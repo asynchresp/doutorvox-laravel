@@ -45,6 +45,11 @@ Route::group(['prefix' => 'mobile'], function () {
     Route::group(['prefix' => 'noticia'], function () {
         Route::post('obter_noticias', 'Mobile\MobileNoticiaController@obterNoticias');
     });
+    Route::group(['prefix' => 'pedido'], function () {
+        Route::post('obter_pedidos_escritorio', 'Mobile\MobilePedidoController@obterPedidosDoEscritorio');
+        Route::post('deletar_pedido', 'Mobile\MobilePedidoController@deletarPedido');
+        Route::post('aprovar_pedido', 'Mobile\MobilePedidoController@aprovarPedido');
+    });
 });
 
 

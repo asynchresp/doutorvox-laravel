@@ -15,9 +15,9 @@ class CreateNoticiasTable extends Migration
         Schema::create('noticias', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('idfeed')->unsigned();
-            $table->foreign('idfeed')->references('id')->on('feeds')->cascade();
+            $table->foreign('idfeed')->references('id')->on('feeds')->onDelete('cascade');
             $table->integer('idusuario')->unsigned();
-            $table->foreign('idusuario')->references('id')->on('usuarios')->cascade();
+            $table->foreign('idusuario')->references('id')->on('usuarios')->onDelete('cascade');
             $table->string('titulo');
             $table->text('resumo');
             $table->date('dtnoticia');

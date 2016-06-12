@@ -14,9 +14,9 @@ class CreateUsuariosDiligenciasTable extends Migration
     {
         Schema::create('usuarios_diligencias', function (Blueprint $table) {
             $table->integer('idusuario')->unsigned();
-            $table->foreign('idusuario')->references('id')->on('usuarios')->cascade();
+            $table->foreign('idusuario')->references('id')->on('usuarios')->onDelete('cascade');
             $table->integer('iddiligencia')->unsigned();
-            $table->foreign('iddiligencia')->references('id')->on('diligencias')->cascade();
+            $table->foreign('iddiligencia')->references('id')->on('diligencias')->onDelete('cascade');
         });
     }
 
