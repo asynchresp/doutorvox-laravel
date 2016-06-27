@@ -15,9 +15,10 @@ use Illuminate\Support\Facades\Storage;
 class UsuariosController extends Controller
 {
     private $usuario;
-	private $tipo_pessoa = array( 1 => "Pessoa F�sica",
-	2 => "Advogado",
-	3 => "Escrit�rio"
+	private $tipo_pessoa = array( 0 => "Administrador",
+        1 => "Pessoa Física",
+	    2 => "Advogado",
+	    3 => "Escritório"
 	);
 	
 
@@ -36,7 +37,7 @@ class UsuariosController extends Controller
         $response = null;
         try{
             $statusCode = 200;
-            $data = $this->usuario->orderBy('id','desc')->get();
+            $data = $this->usuario->where('tipo' ,'!=', '0')->orderBy('id','desc')->get();
 
             foreach($data as $model){
 
@@ -54,7 +55,8 @@ class UsuariosController extends Controller
                     'cidade' => $model->cidade,
                     'estado' => $model->estado,
                     'cep' => $model->cep,
-                    'tipo_assinatura' => $model->tipo_assinatura
+                    'tipo_assinatura' => $model->tipo_assinatura,
+                    'OAB' => $model->OAB
 
                 ];
             }
@@ -124,6 +126,28 @@ class UsuariosController extends Controller
         }
     }
 
+    public function salvarUsuario(Request $request)
+    {
+        try{
+            $aDados = $request->all();
+            if(is_array($aDados['idcidade']) && $aDados['idcidade'] != null&& $aDados['idcidade'] != "")
+                $aDados['idcidade'] = $aDados['idcidade']['id'];
+            else
+                unset($aDados['idcidade']);
+
+            $aDados['password'] = rand(1,100);
+
+            $idUser = $this->usuario->where(array('email'=>$aDados['email']))->value('id');
+            if($idUser > 0)
+                return response()->json(array('success' => false, 'message' => "Seu E-mail já está cadastrado em nosso aplicativo. Aguarde em breve teremos novidades."), 200);
+            $this->usuario->create($aDados);
+
+            return  response()->json(array('success' => true,'retorno' => $this->usuario->toArray()), 200);
+        }catch (Exception $e){
+            return  response()->json(array('success' => false), 400);
+        }
+    }
+
     /**
      * Display the specified resource.
      *
@@ -150,7 +174,8 @@ class UsuariosController extends Controller
                 'estado' => $model->estado,
                 'cep' => $model->cep,
                 'imagem_perfil' => $model->imagem_perfil,
-                'tipo_assinatura' => $model->tipo_assinatura
+                'tipo_assinatura' => $model->tipo_assinatura,
+                'OAB' => $model->OAB
             ];
 
             $aDiligencias = array();
@@ -264,7 +289,7 @@ class UsuariosController extends Controller
                     'cidade' => $model->cidade,
                     'estado' => $model->estado,
                     'cep' => $model->cep,
-
+                    'OAB' => $model->OAB
                 ];
             }
 

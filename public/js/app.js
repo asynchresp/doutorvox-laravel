@@ -68,7 +68,8 @@ MetronicApp.controller('HeaderController', ['$scope','$http', 'localStorageServi
     });
 	
 	$scope.usuario = localStorageService.get('AuthUsuario');
-	
+	if($scope.usuario == null)
+        window.location = 'iniciar';
     $scope.logout = function(){
         $http.get('logout').success(function(data){
             if(data == "Unauthorized."){
@@ -366,6 +367,27 @@ MetronicApp.config(['$stateProvider', '$httpProvider', '$urlRouterProvider', 'lo
             }
         })
 
+        //Pesquisar Pedidos
+        .state('Pesquisar_pedidos', {
+            url: "/pesquisar_pedidos",
+            templateUrl: "views/pedidos_pesquisa.html",
+            data: {pageTitle: 'Pedidos', pageSubTitle: 'Pesquisa de Pedidos', controller_php: 'pedido', label:'pedidos'},
+            controller: "PedidoPesquisaController",
+            resolve: {
+                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+                        files: [
+                            'js/scripts/mask.js',
+                            'js/controllers/PedidoPesquisaController.js',
+                            'assets/admin/pages/scripts/table-managed.js'
+                        ]
+                    });
+                }]
+            }
+        })
+
         // User Profile
         .state("profile", {
             url: "/profile",
@@ -451,7 +473,7 @@ function paginacao($scope,ngTableParams,arrayPaginacao,porPagina){
 
 /* Constantes de configurações gerais do sistema. */
 var timeoutAlertTime = 2500;
-function exibirMensagemAlert (elemento, mensagem, tipo, icon){
+function exibirMensagemAlert (elemento, mensagem, tipo, icon, time){
     Metronic.alert({
         container: elemento, // alerts parent container(by default placed after the page breadcrumbs)
         place: 'append', // append or prepent in container 
@@ -460,7 +482,7 @@ function exibirMensagemAlert (elemento, mensagem, tipo, icon){
         close: true, // make alert closable
         reset: true, // close all previouse alerts first
         focus: true, // auto scroll to the alert after shown
-        closeInSeconds: 5, // auto close after defined seconds
+        closeInSeconds: time, // auto close after defined seconds
         icon: icon // put icon before the message = warning / check / user
     });
 }

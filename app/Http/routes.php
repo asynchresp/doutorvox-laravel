@@ -33,9 +33,6 @@ Route::post('register', 'AccountController@register');
 Route::post('login', 'AccountController@login');
 Route::get('logout', 'AccountController@logout');
 
-Route::get('advogado', 'UsuariosController@advogado');
-Route::get('advogado_dashboard', 'UsuariosController@advogadoDashboard');
-Route::get('pedido_dashboard', 'PedidosController@pedidoDashboard');
 
 Route::group(['prefix' => 'mobile'], function () {
     Route::group(['prefix' => 'usuario'], function () {
@@ -58,10 +55,15 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('auth/login', 'Auth\AuthController@postLogin');
     Route::get('auth/logout', 'Auth\AuthController@getLogout');
 
+    Route::post('cadastrar_novo/', 'UsuariosController@salvarUsuario');
+    Route::get('cidade_cadastro/', 'CidadesController@index');
+
 // Registration routes...
+    /*
     Route::get('auth/register', 'Auth\AuthController@getRegister');
-    Route::post('auth/register', 'Auth\AuthController@postRegister');
+    Route::post('auth/register', 'Auth\AuthController@postRegister');*/
 });
+
 Route::group(['middleware' => 'web'], function () {
     Route::get('/', ['middleware' => 'auth', 'uses' => 'IndexController@index', function() {
 
@@ -69,6 +71,7 @@ Route::group(['middleware' => 'web'], function () {
 	Route::get('iniciar', function(){
 		return view('iniciar');
 	});
+    
     Route::resource('pedido', 'PedidosController');
     Route::resource('feed', 'FeedsController');
     Route::resource('noticia', 'NoticiasController');
@@ -93,5 +96,10 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('meu_resumo/{id}', 'PedidosController@meu_resumo');
     Route::put('usuario_senha/{id}', 'UsuariosController@usuario_senha');
     Route::post('UploadImagePerfil/', 'UsuariosController@UploadImagePerfil');
+
+    Route::get('advogado', 'UsuariosController@advogado');
+    Route::get('advogado_dashboard', 'UsuariosController@advogadoDashboard');
+    Route::get('pedido_dashboard', 'PedidosController@pedidoDashboard');
+    Route::get('ultimos_pedidos', 'PedidosController@ultimos_pedidos');
 
 });

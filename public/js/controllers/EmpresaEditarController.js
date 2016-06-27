@@ -70,6 +70,11 @@ MetronicApp.controller('EmpresaEditarController', function($rootScope, $scope, $
                 if($scope.object_cadastro.diligencias.length > 0)
                     $scope.object_cadastro.diligencias = $scope.object_cadastro.diligencias.split(',');
 
+                if($scope.object_cadastro.tipo == constPerfilEscritorio)
+                    $scope.cnpj = $scope.object_cadastro.cpf_cnpj;
+                else
+                    $scope.cpf = $scope.object_cadastro.cpf_cnpj;
+
                 $('#diligencias').select2({
                     placeholder: "Selecione as diligências do pedido",
                     allowClear: true
@@ -155,6 +160,12 @@ MetronicApp.controller('EmpresaEditarController', function($rootScope, $scope, $
     $scope.salvar = function(){
         if($scope.object_cadastro.idcidade == "Object")
             $scope.object_cadastro.idcidade = $scope.object_cadastro.idcidade.id;
+
+        if($scope.object_cadastro.tipo == constPerfilEscritorio)
+            $scope.object_cadastro.cpf_cnpj = $scope.cnpj;
+        else
+            $scope.object_cadastro.cpf_cnpj = $scope.cpf;
+
         if(!$scope.object_cadastro.id){
             $http.post('/usuario/',$scope.object_cadastro).success(function(data){
                 $scope.object_cadastro.id = data.retorno.id;

@@ -29,8 +29,11 @@ class PedidosController extends Controller
         $response = null;
         try{
             $statusCode = 200;
-
-            $data = $this->pedido->orderBy('id','desc')->get();
+            $usuario = \App\Usuario::find(Auth::user()->id);
+            if($usuario->tipo == 0)
+                $data = $this->pedido->orderBy('id','desc')->get();
+            else
+                $data = $this->pedido->where('idusuario_cadastro', '=', $usuario->id)->orderBy('id','desc')->get();
 
             foreach($data as $model){
 
@@ -58,6 +61,38 @@ class PedidosController extends Controller
         }
     }
 
+    public function ultimos_pedidos()
+    {
+        $response = null;
+        try{
+            $statusCode = 200;
+
+            $data = $this->pedido->where('status','=','2')->orderBy('id','desc')->get();
+            $usuario = \App\Usuario::find(Auth::user()->id);
+
+            foreach($data as $model){
+                $idproposta = \App\Candidato::where(array('idpedido'=>$model->id, 'idusuario' => $usuario->id))->value('id');
+                $response[] = [
+                    'id' => (int) $model->id,
+                    'status' => $model->status,
+                    'finalizado' => $model->finalizado,
+                    'tipo_pagamento' => $model->tipo_pagamento,
+                    'valor_minimo' => $model->valor_minimo,
+                    'valor_maximo' => $model->valor_maximo,
+                    'cidade' => $model->cidade,
+                    'diligencias' => $model->diligencias,
+                    'usuario_cadastro' => $model->usuarioCadastrouPedido,
+                    'proposta' => $idproposta,
+                ];
+            }
+
+        }catch (Exception $e){
+            $statusCode = 400;
+        }finally{
+            return response()->json($response, $statusCode);
+        }
+    }
+
     public function pedidoDashboard()
     {
         $response = null;
@@ -67,7 +102,11 @@ class PedidosController extends Controller
                 'pedidos'  => []
             ];
 
-            $data = $this->pedido->orderBy('id','desc')->get()->take(20);
+            $usuario = \App\Usuario::find(Auth::user()->id);
+            if($usuario->tipo == 0)
+                $data = $this->pedido->orderBy('id','desc')->get();
+            else
+                $data = $this->pedido->where('idusuario_cadastro', '=', $usuario->id)->orderBy('id','desc')->get();
 
             foreach($data as $model){
 
@@ -118,9 +157,16 @@ class PedidosController extends Controller
             if(is_array($aDados['idcidade']) && $aDados['idcidade'] != null)
                 $aDados['idcidade'] = $aDados['idcidade']['id'];
             $aDados['finalizado'] = false;
+            if(!isset($aDados['status']))
+                $aDados['status'] = 1;
             $aDados['tipo_pagamento'] = 0;
             $aDados['idusuario_cadastro'] = Auth::user()->id;
             $aDados['idusuario_alteracao'] = Auth::user()->id;
+
+
+            $aDados['valor_maximo'] = $this->formataValor($aDados['valor_maximo']);
+            $aDados['valor_minimo'] = $this->formataValor($aDados['valor_minimo']);
+
             $pedido = $this->pedido->create($aDados);
             $diligencias = $request->input('diligencias');
             $aDiligencias = array();
@@ -182,10 +228,12 @@ class PedidosController extends Controller
             else
                 $response['idcidade'] = "";
 
+            $response['andamentos'] = array();
             if(count($model->andamentos) > 0 ){
                 foreach ($model->andamentos as $andamento){
                     $usuario = \App\Usuario::find($andamento->idusuario);
                     $response['andamentos'][] = [
+                        'id' => $andamento->id,
                         'comentario' => $andamento->comentario,
                         'status' => $andamento->status ,
                         'usuario' => $usuario,
@@ -250,6 +298,10 @@ class PedidosController extends Controller
             if(is_array($aDados['idcidade']) && $aDados['idcidade'] != null)
                 $aDados['idcidade'] = $aDados['idcidade']['id'];
             $aDados['idusuario_alteracao'] = Auth::user()->id;
+
+            $aDados['valor_maximo'] = $this->formataValor($aDados['valor_maximo']);
+            $aDados['valor_minimo'] = $this->formataValor($aDados['valor_minimo']);
+
             $pedido->update($aDados);
             $diligencias = $request->input('diligencias');
             $aDiligencias = array();
@@ -370,6 +422,17 @@ class PedidosController extends Controller
         }finally{
             return response()->json($response, $statusCode);
         }
+    }
+
+    static function formataValor($fValor){
+        if(strpos($fValor, "$") > 0) {
+            //"R$ 1.500,36"
+            $fValor = str_replace("R$ ","",$fValor);
+            $fValor = str_replace(".","",$fValor);
+            $fValor = str_replace(",",".",$fValor);
+        }
+
+        return $fValor;
     }
 
     function dateTimeFormatBr($pDate){

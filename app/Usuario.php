@@ -8,7 +8,7 @@ class Usuario extends Authenticatable
 {
 
     protected $fillable =  ['nome','email','password','cpf_cnpj','telefone',
-    'comercial','celular','tipo','logradouro','bairro','idcidade','idestado','cep', 'tipo_assinatura', 'imagem_perfil'];
+    'comercial','celular','residencial','tipo','logradouro','bairro','idcidade','idestado','cep', 'tipo_assinatura', 'imagem_perfil', 'OAB'];
 
     /**
      * The attributes excluded from the model's JSON form.

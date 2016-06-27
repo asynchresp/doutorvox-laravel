@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml"  data-ng-app="CadastroApp">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -18,6 +18,7 @@
     <!-- Custom styles for this template -->
     <link href="css/style.css" rel="stylesheet" type="text/css" >
     <link rel="stylesheet" type="text/css" href="css/style-responsives.css"/>
+    <link href="assets/global/plugins/select2/select2.css" rel="stylesheet" type="text/css" />
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -27,7 +28,7 @@
 </head>
 
 <body>
-<div id="wrap">
+<div id="wrap" ng-controller="CadastroController">
     <!-- HEADER -->
     <nav class="navbar navbar-doutor">
         <div class="container" style="height: auto">
@@ -39,7 +40,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html"><img src="imagens/logo.png" class="img-responsive" alt="Doutor Vox App" /></a>
+                <a class="navbar-brand" href="/site"><img src="imagens/logo.png" class="img-responsive" alt="Doutor Vox App" /></a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
@@ -57,59 +58,80 @@
                     <h1 class="titulo-texto">CADASTRO DE PARCEIRO</h1>
                 </div>
             </div>
-            <form name="cadastro" id="cadastro" class="row">
+            <div ng-show="cadastrador">
+                <h3>Obrigado por realizar seu cadastro. Em breve entraremos em contato com novidades.</h3>
+            </div>
+            <form name="cadastro" id="cadastro" class="row" ng-show="!cadastrador">
+                <div id="mensagem-status" class="alert alert-warning" style="display: none;"></div>
+                <div id="mensagem-status-success" class="alert alert-success" style="display: none;"></div>
                 <ul class="list-unstyled col-xs-12">
                     <li>
-                        <a href="" class="btn btn-vermelho-rounded active"><i class="fa fa-user fa-fw" aria-hidden="true"></i>Pessoa Física</a>
+                        <a href="" class="btn btn-vermelho-rounded" ng-class="{ 'active': objeto_cadastro.tipo == 1}" ng-click="objeto_cadastro.tipo = 1"><i class="fa fa-user fa-fw" aria-hidden="true"></i>Pessoa Física</a>
                     </li>
                     <li>
-                        <a href="" class="btn btn-vermelho-rounded"><i class="fa fa-suitcase fa-fw" aria-hidden="true"></i>Advogado</a>
+                        <a href="" class="btn btn-vermelho-rounded" ng-class="{ 'active': objeto_cadastro.tipo == 2}" ng-click="objeto_cadastro.tipo = 2"><i class="fa fa-suitcase fa-fw" aria-hidden="true"></i>Advogado</a>
+                    </li>
+                    <li>
+                        <a href="" class="btn btn-vermelho-rounded" ng-class="{ 'active': objeto_cadastro.tipo == 3}" ng-click="objeto_cadastro.tipo = 3"><i class="fa fa-bank fa-fw" aria-hidden="true"></i>Escritório</a>
                     </li>
                 </ul>
+
                 <div class="form-group col-sm-12 col-md-6">
-                    <label for="nome">Nome</label>
-                    <input type="text" class="form-control" id="nome">
+                    <label for="nome" ng-show="objeto_cadastro.tipo != 3">Nome</label>
+                    <label for="nome" ng-show="objeto_cadastro.tipo == 3">Nome Fantasia</label>
+                    <input type="text" class="form-control" id="nome" ng-model="objeto_cadastro.nome">
                 </div>
                 <div class="form-group col-sm-12 col-md-6">
                     <label for="email">Email</label>
-                    <input type="email" class="form-control" id="email">
+                    <input type="email" class="form-control" id="email" ng-model="objeto_cadastro.email">
                 </div>
-                <div class="form-group col-sm-6 col-xs-12">
+                <div class="form-group col-sm-6 col-xs-6" ng-show="objeto_cadastro.tipo != 3">
                     <label for="cpf">CPF</label>
-                    <input type="text" class="form-control" id="cpf">
+                    <input type="text" class="form-control mask_cpf" id="cpf" ng-model="objeto_cadastro.cpf">
+                </div>
+                <div class="form-group col-sm-6 col-xs-6" ng-show="objeto_cadastro.tipo == 2">
+                    <label for="OAB">N° OAB</label>
+                    <input type="text" class="form-control" id="OAB" ng-model="objeto_cadastro.OAB">
+                </div>
+                <div class="form-group col-sm-6 col-xs-6" ng-show="objeto_cadastro.tipo == 3">
+                    <label for="cpf">CNPJ</label>
+                    <input type="text" class="form-control mask_cnpj" id="cnpj" ng-model="objeto_cadastro.cnpj">
                 </div>
                 <div class="clearfix"></div>
                 <div class="col-xs-12">
                     <h1 class="titulo-texto">Informações de contato</h1>
                 </div>
                 <div class="form-group col-sm-6 col-md-4">
-                    <label for="telefone">Telefone</label>
-                    <input type="text" class="form-control" id="telefone">
+                    <label for="residencial">Residêncial</label>
+                    <input type="text" class="form-control mask_phone" id="tel-residencial" ng-model="objeto_cadastro.telefone">
+                </div>
+                <div class="form-group col-sm-6 col-md-4">
+                    <label for="telefone">Celular</label>
+                    <input type="text" class="form-control mask_phone" id="telefone" ng-model="objeto_cadastro.celular">
                 </div>
                 <div class="form-group col-sm-6 col-md-4">
                     <label for="comercial">Comercial</label>
-                    <input type="text" class="form-control" id="tel-comercial">
-                </div>
-                <div class="form-group col-sm-6 col-md-4">
-                    <label for="residencial">Residêncial</label>
-                    <input type="text" class="form-control" id="tel-residencial">
+                    <input type="text" class="form-control mask_phone" id="tel-comercial" ng-model="objeto_cadastro.comercial">
                 </div>
                 <div class="form-group col-sm-6 col-md-6">
                     <label for="endereco">Endereço</label>
-                    <input type="text" class="form-control" id="endereco">
+                    <input type="text" class="form-control" id="endereco" ng-model="objeto_cadastro.logradouro">
                 </div>
                 <div class="form-group col-sm-6 col-md-3">
                     <label for="endereco">Cidade</label>
-                    <select class="form-control" id="cidade">
-                        <option>1</option>
+                    <select id="cidade"
+                            name="cidade"
+                            class="form-control select2"
+                            ng-model="objeto_cadastro.idcidade"
+                            ng-options="cidade.cidade + ' (' + (cidade.estado | uppercase) + ')' for cidade in lista_cidades track by cidade.id">
                     </select>
                 </div>
                 <div class="form-group col-sm-4 col-md-3">
                     <label for="cep">CEP</label>
-                    <input type="text" class="form-control" id="cep">
+                    <input type="text" class="form-control mask_cep" id="cep" ng-model="objeto_cadastro.cep" >
                 </div>
                 <div class="clearfix"></div>
-                <div class="col-xs-12">
+                <!--<div class="col-xs-12">
                     <h1 class="titulo-texto">Plano de Assinatura</h1>
                 </div>
                 <div id="plano1" class="form-group col-xs-12 col-sm-6 col-md-3 mtop15">
@@ -199,14 +221,14 @@
                             <a class="btn btn-vermelho-rounded btn-block active" href="">Selecionar</a>
                         </div>
                     </div>
-                </div>
+                </div>-->
                 <div class="clearfix"></div>
                 <div class="col-sm-6 col-xs-12">
-                    <a href="" class="no-btn pull-left"><i class="fa fa-fw fa-times" aria-hidden="true"></i>
+                    <a href="/site" class="no-btn pull-left"><i class="fa fa-fw fa-times" aria-hidden="true"></i>
                         Cancelar</a>
                 </div>
                 <div class="col-sm-6 col-xs-12">
-                    <a href="" class="btn btn-vermelho pull-right"><i class="fa fa-fw fa-thumbs-o-up" aria-hidden="true"></i>
+                    <a class="btn btn-vermelho pull-right" ng-click="salvarCadastro()"><i class="fa fa-fw fa-thumbs-o-up" aria-hidden="true"></i>
                         Cadastrar</a>
                 </div>
             </form>
@@ -245,5 +267,21 @@
 <!-- jQuery -->
 <script src="http://code.jquery.com/jquery-1.12.0.min.js"></script>
 <script src="script/bootstrap.min.js"></script>
+<script src="assets/global/plugins/select2/select2.min.js" type="text/javascript" ></script>
+<script src="assets/global/plugins/jquery-inputmask/jquery.inputmask.bundle.min.js" type="text/javascript" ></script>
 
+<!-- BEGIN CORE ANGULARJS PLUGINS -->
+<script src="assets/global/plugins/angularjs/angular.min.js" type="text/javascript"></script>
+<script src="assets/global/plugins/angularjs/angular-touch.min.js" type="text/javascript"></script>
+<script src="assets/global/plugins/angularjs/plugins/angular-ui-router.min.js" type="text/javascript"></script>
+<script src="assets/admin/pages/scripts/angular-block-ui.min.js"></script>
+<script src="assets/admin/pages/scripts/angular-local-storage.min.js"></script>
+
+<script src="js/appCadastro.js" type="text/javascript"></script>
+<script src="js/scripts/mask.js" type="text/javascript"></script>
+<script>/* Init Metronic's core jquery plugins and layout scripts */
+    $(document).ready(function() {
+        MaskFormTools.init();
+    });
+</script>
 </html>

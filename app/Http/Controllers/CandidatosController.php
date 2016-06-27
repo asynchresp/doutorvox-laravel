@@ -70,19 +70,22 @@ class CandidatosController extends Controller
      */
     public function store(Request $request)
     {
+        /**
+         * idpedido
+         * idusuario
+         * valor_proposta = "R$ 365,32"
+         */
         try{
-            $this->candidato->create($request->all())->toArray();
-            $usuario = \App\Usuario::find($this->candidato->idusuario);
-            $response = [
-                'id' => (int) $this->candidato->id,
-                'usuario' => $usuario,
-                'idusuario' => $this->candidato->idusuario,
-                'idpedido' => $this->candidato->idpedido,
-                'dhproposta' => $this->candidato->dhproposta,
-                'aprovado' => $this->candidato->aprovado
-            ];
+            $aDados = $request->all();
+            $aDados['valor_proposta'] = \App\Http\Controllers\PedidosController::formataValor($aDados['valor_proposta']);
+            $aDados['dhproposta'] = date("d/m/Y H:m:s");
+            $idproposta = $this->candidato->where(array('idpedido'=>$aDados['idpedido'], 'idusuario' => $aDados['idusuario']))->value('id');
+            if($idproposta > 0)
+                return  response()->json(array('success' => false,'message' => 'Você já possui uma proposta para este pedido.'), 200);
 
-            return  response()->json(array('success' => true,'retorno' => $response), 200);
+            $this->candidato->create($aDados)->toArray();
+
+            return  response()->json(array('success' => true), 200);
         }catch (Exception $e){
             return  response()->json(array('success' => false), 400);
         }
@@ -141,14 +144,12 @@ class CandidatosController extends Controller
     {
         try{
             $model = $this->candidato->find($id);
-            $model->update($request->all());
-            $usuario = \App\Usuario::find($this->candidato->idusuario);
+            $aData = $request->all();
+            unset($aData['dhproposta']);
+            unset($aData['valor_proposta']);
+            $model->update($aData);
+
             $response = [
-                'id' => (int) $model->id,
-                'usuario' => $usuario,
-                'idusuario' => $model->idusuario,
-                'idpedido' => $model->idpedido,
-                'dhproposta' => $model->dhproposta,
                 'aprovado' => $model->aprovado
             ];
 

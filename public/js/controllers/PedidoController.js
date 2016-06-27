@@ -16,8 +16,11 @@ MetronicApp.controller('PedidoController', function($rootScope, $scope, $filter,
    
         
     $http.get($scope.controller_name).success(function(data){
-		$scope.lista = data;
-		paginacao($scope,ngTableParams,$scope.lista,10);
+		if(data.length > 0) {
+			$scope.lista = data;
+			paginacao($scope, ngTableParams, $scope.lista, 10);
+		} else
+			exibirMensagemAlert($("#mensagem-status"), 'Você não possui pedidos em andamento.', 'success', 'success');
 	}).error(function(data, status, headers, config) {
 		exibirMensagemAlert($("#mensagem-status"), 'Não foi possivel encontrar a lista de itens.', 'warning', 'warning');
 	});;;

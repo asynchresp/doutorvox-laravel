@@ -49,9 +49,9 @@
                 <button type="submit" class="btn btn-primary">
                     <i class="fa fa-btn fa-sign-in"></i>Entrar
                 </button>
-
+                <!--
                 <a href="{{ url('/register') }}" class="btn btn-link" >Cadastrar</a>
-                <a class="btn btn-link" href="{{ url('/password/reset') }}">Esqueceu a senha?</a>
+                <a class="btn btn-link" href="{{ url('/password/reset') }}">Esqueceu a senha?</a>-->
             </div>
         </div>
     </form>

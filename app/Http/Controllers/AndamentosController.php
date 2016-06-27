@@ -143,14 +143,10 @@ class AndamentosController extends Controller
         try{
             $aDados = $request->all();
             $aDados['idusuario'] = Auth::user()->id;
-            $this->andamento->find($id)->update($aDados);
-            $usuario = \App\Usuario::find($this->andamento->idusuario);
+            $andamento = $this->andamento->find($id);
+            $andamento->update($aDados);
             $response = [
-                'id' => (int) $this->andamento->id,
-                'usuario' => $usuario,
-                'pedido' => $this->andamento->pedido,
-                'comentario' => $this->andamento->comentario,
-                'status' => $this->andamento->status
+                'status' => $andamento->status
             ];
             return  response()->json(array('success' => true, 'retorno' => $response), 200);
         }catch (Exception $e){

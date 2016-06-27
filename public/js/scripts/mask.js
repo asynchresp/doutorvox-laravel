@@ -18,7 +18,7 @@ var MaskFormTools = function () {
         	$(".mask_cnpj").inputmask("mask", {
         	    "mask": "99.999.999/9999-99"
         	});
-                
+
             $(".mask_date").inputmask("d/m/y", {
                 "placeholder": "dd/mm/yyyy"
             }); //multi-char placeholder
@@ -31,7 +31,12 @@ var MaskFormTools = function () {
                 "greedy": false
             }); // ~ mask "9" or mask "99" or ... mask "9999999999"
             $(".mask_decimal").inputmask('decimal', {
-                rightAlignNumerics: false
+                rightAlignNumerics: false,
+                radixPoint:",",
+                groupSeparator: ".",
+                digits: 2,
+                autoGroup: true,
+                prefix: 'R$ '
             }); //disables the right alignment of the decimal input
             $(".mask_currency").inputmask('R$ 999.999.999,99', {
                 numericInput: true

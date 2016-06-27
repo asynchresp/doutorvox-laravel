@@ -28,11 +28,15 @@
 				<div id="mensagem-status" style="text-align: left; margin-top: 10px;" ></div>
 					<div class="tabbable">
 						<ul class="nav nav-tabs nav-tabs-lg">
-							<li id="detalhes" class="active">
+							<li id="detalhes" class="active" ng-show="usuario.perfil != 2">
 								<a ng-click="tabs(1)">
 								Detalhes </a>
 							</li>
-							<li id="candidatos">
+							<li id="detalhes_pedido" class="active" ng-show="usuario.perfil == 2">
+								<a ng-click="tabs(4)">
+									Detalhes do Pedido</a>
+							</li>
+							<li id="candidatos" ng-show="usuario.perfil != 2">
 								<a  ng-click="tabs(2)">
 								Candidatos
 								</a>
@@ -65,10 +69,10 @@
 									<div class="form-inline form-group">
 										<div class="form-group">
 											<label>Valores :</label>
-											<input type="text" class="form-control" placeholder="Valor Mínimo" ng-model="object_cadastro.valor_minimo">
+											<input type="text" class="form-control mask_decimal" placeholder="Valor Mínimo" ng-model="object_cadastro.valor_minimo">
 										</div>
 										<div class="form-group">
-											<input type="text" class="form-control" placeholder="Valor Maximo" ng-model="object_cadastro.valor_maximo">
+											<input type="text" class="form-control mask_decimal" placeholder="Valor Maximo" ng-model="object_cadastro.valor_maximo">
 										</div>
 									</div>		
 									
@@ -78,7 +82,7 @@
 										name="cidades" 
 										class="form-control select2" 
 										ng-model="object_cadastro.idcidade"
-										ng-options="cidade.cidade for cidade in lista_cidades track by cidade.id">
+										ng-options="cidade.cidade + ' (' + (cidade.estado | uppercase) + ')' for cidade in lista_cidades track by cidade.id">
 										</select>
 									</div>
 									
@@ -93,9 +97,9 @@
 										</select>
 									</div>
 														
-									<div class="form-group">
+									<div class="form-group" ng-show="object_cadastro.id > 0">
 										<label>Situação : *</label> 
-										<select name="status" class="form-control input-small" ng-model="object_cadastro.status" required>
+										<select name="status" class="form-control input-large" ng-model="object_cadastro.status" disabled>
 											<option value="0">Inativo</option>
 											<option value="1">Pendente</option>
 											<option value="2">Aguardando Candidato</option>
@@ -103,11 +107,25 @@
 											<option value="4">Aguardando Aprovação</option>
 											<option value="5">Finalizado</option>											
 										</select>
+										<br/>
+										<div ng-switch on="object_cadastro.status">
+											<div ng-switch-when="0">
+												<div class="alert alert-success"><i class="fa-lg fa fa-check"></i>  Seu pedido se encontra inativado no momento. </div>
+											</div>
+											<div ng-switch-when="1">
+												<div class="alert alert-success"><i class="fa-lg fa fa-check"></i>  Seu pedido se encontra <b>"Pendente"</b> e ainda não pode ser visualizado pelos Advogados cadastrados, para liberar seu pedido clique no botão <b>"Publicar Pedido"</b>. </div>
+											</div>
+											<div ng-switch-when="3">
+												<div class="alert alert-success"><i class="fa-lg fa fa-check"></i>  Seu pedido se encontra <b>"Em andamento"</b> e agora necessita que o Advogado selecionado inicie as atividades e andamentos no processo.</b>. </div>
+											</div>
+										</div>
 									</div>					
 														
-									<button class="btn btn-circle blue" type="button" ng-click="salvar(object_cadastro)" ng-disabled="formCadastrar.$invalid">Cadastrar</button>
-									<button class="btn btn-danger" type="button" ng-click="excluir(object_cadastro.idusuario)" ng-show="object_cadastro.idusuario">Excluir</button>
-									<a type="button" class="btn btn-primary" ng-href="#/pedidos.html" >Voltar</a>
+									<button class="btn btn-circle blue" type="button" ng-click="salvar(object_cadastro)" ng-disabled="formCadastrar.$invalid">Salvar</button>
+									<button class="btn btn-circle green" type="button" ng-click="salvarPendente(object_cadastro)" ng-show="object_cadastro.status == 1">Publicar Pedido</button>
+									<button class="btn btn-circle green" type="button" ng-click="salvarFinalizado(object_cadastro)" ng-show="object_cadastro.status == 2">Finalizar Pedido</button>
+									<button class="btn btn-danger" type="button" ng-click="excluir(object_cadastro.idusuario)" ng-show="object_cadastro.id > 0">Excluir</button>
+									<a type="button" class="btn btn-default" ng-href="#/pedidos" >Voltar</a>
 									</form>
 								</div>
 							</div>
@@ -162,16 +180,12 @@
 											</textarea>
 										</th>
 										<th align="center" valign="middle"> 
-											<select name="status" class="form-control input-small" ng-model="object_andamento.status" required>
-												<option value="0">Inativo</option>
-												<option value="1">Pendente</option>
-												<option value="2">Aguardando Candidato</option>
+											<select name="status" class="form-control input-large" ng-model="object_andamento.status" required>
 												<option value="3">Em andamento</option>
 												<option value="4">Aguardando Aprovação</option>
-												<option value="5">Finalizado</option>											
 											</select> 
 										</th>
-										<th> <button class="btn btn-primary" type="button" ng-click="salvar_andamento(object_andamento)">Salvar</button> </th>
+										<th> <button class="btn btn-primary" type="button" ng-click="salvar_andamento(object_andamento)">Salvar</button> <button class="btn btn-default" type="button" ng-click="cadastrar_cancelar()">Cancelar</button> </th>
 									</tr>
 									</thead>
 									<tbody ng-repeat="andamento in object_cadastro.andamentos | orderBy: '-id' ">
@@ -208,13 +222,54 @@
 												 {{andamento.usuario.nome}}
 											</td>
 											<td>
-												<button class="btn btn-primary" type="button" ng-click="alterar_andamento(andamento)">Editar</button>
+												<button class="btn btn-primary" type="button" ng-click="alterar_andamento(andamento)" ng-show="andamento.usuario.id == usuario.id">Editar</button>
 												<!-- <button class="btn btn-danger" type="button" ng-click="excluir_andamento(andamento, andamento.id)">Excluir</button>  -->
 											</td>
 										</tr>
 									</tbody>
 								</table>
 							</div>
+							<div ng-show="painel_4">
+								<div class="alert alert-block alert-info fade in"  ng-show="loading">
+									<h4 class="alert-heading">Carregando informações, aguarde...</h4>
+									<div class="progress progress-striped active">
+										<div style="width: 100%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="10" role="progressbar" class="progress-bar progress-bar-success">
+											<span class="sr-only"> 100% Complete (success) </span>
+										</div>
+									</div>
+								</div>
+								<div  ng-show="!loading" class="col-sm-6">
+										<div class="form-group" >
+											<label>Código do Pedido : *</label>
+											<input type="text" class="form-control imp" placeholder="id" ng-model="object_cadastro.id" disabled="disabled">
+										</div>
+
+										<div class="form-group">
+											<label>Cidade :</label>
+											<input type="text" class="form-control imp" ng-model="show_cidade" disabled="disabled">
+										</div>
+
+										<div class="form-group">
+											<label>Diligências :</label>
+											<input type="text" class="form-control imp" ng-model="show_diligencias" disabled="disabled">
+										</div>
+
+										<div class="form-group" ng-show="object_cadastro.id > 0">
+											<label>Situação : *</label>
+											<select name="status" class="form-control input-large" ng-model="object_cadastro.status" disabled>
+												<option value="0">Inativo</option>
+												<option value="1">Pendente</option>
+												<option value="2">Aguardando Candidato</option>
+												<option value="3">Em andamento</option>
+												<option value="4">Aguardando Aprovação</option>
+												<option value="5">Finalizado</option>
+											</select>
+										</div>
+										<a type="button" class="btn btn-default" ng-href="#/pedidos" >Voltar</a>
+									</form>
+								</div>
+							</div>
+
 						</div>
 					</div>
 				

@@ -26,8 +26,27 @@
 		</li>
 	</ul>
 	<!-- END SIDEBAR MENU -->
-	
-	<!-- ADVOGADO / Pessoa Fisica -->
+
+	<!-- Pessoa Fisica / Empresa -->
+	<ul class="page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200" ng-class="{'page-sidebar-menu-closed': settings.layout.pageSidebarClosed}" ng-show="usuario.perfil == 3 || usuario.perfil == 1">
+		<li class="heading">
+			<h3>GENERAL</h3>
+		</li>
+		<li class="start">
+			<a href="#/dashboard">
+				<i class="icon-home"></i>
+				<span class="title">Dashboard</span>
+			</a>
+		</li>
+		<li>
+			<a href="#/pedidos">
+				<i class="icon-basket"></i>
+				<span class="title">Meus Pedidos</span>
+			</a>
+		</li>
+	</ul>
+
+	<!-- ADVOGADO -->
 	<ul class="page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200" ng-class="{'page-sidebar-menu-closed': settings.layout.pageSidebarClosed}" ng-show="usuario.perfil == 2">
 		<li class="heading">
 			<h3>GENERAL</h3>
@@ -38,8 +57,6 @@
 			<span class="title">Dashboard</span>
 			</a>
 		</li>
-	</ul>
-	<ul  class="page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200" ng-class="{'page-sidebar-menu-closed': settings.layout.pageSidebarClosed}"  ng-show="usuario.perfil == 2">
 		<li>
 			<a href="#/pesquisar_pedidos">
 				<i class="icon-basket"></i>

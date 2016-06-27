@@ -30,7 +30,7 @@ MetronicApp.controller('InicialController', ['$rootScope', '$scope', 'settings',
             });
         }
     }).error(function(data, status, headers, config) {
-        bootbox.alert('Não foi possivel reconhecer seu usuário, favor entrar novamente no sistema.', function(result) {
+        bootbox.alert('NÃ£o foi possivel reconhecer seu acesso, favor entrar novamente.', function(result) {
             window.location = '/login';
         });
     });

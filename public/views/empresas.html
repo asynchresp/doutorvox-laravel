@@ -59,12 +59,14 @@
 							<td>
 								<div ng-switch on="empresa.tipo">
 								    <div ng-switch-when="1">
-								        <span class="label label-sm label-success"> Escritório </span>
+								        <span class="label label-sm label-success"> Pessoa Física </span>
 								    </div>
-								    <div ng-switch-default>
-								        <!-- code to render the regular video block -->
-								        <span class="label label-sm label-danger"> Advogado </span>
-								    </div>
+									<div ng-switch-when="2">
+										<span class="label label-sm label-danger"> Advogado </span>
+									</div>
+									<div ng-switch-when="3">
+										<span class="label label-sm label-warning"> Escritório </span>
+									</div>
 								</div>
 							</td>
 							<td>

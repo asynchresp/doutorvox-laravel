@@ -65,7 +65,7 @@ function exibirMensagemAlert (elemento, mensagem, tipo, icon){
         close: true, // make alert closable
         reset: true, // close all previouse alerts first
         focus: true, // auto scroll to the alert after shown
-        closeInSeconds: 5, // auto close after defined seconds
+        closeInSeconds: 0, // auto close after defined seconds
         icon: icon // put icon before the message = warning / check / user
     });
 }

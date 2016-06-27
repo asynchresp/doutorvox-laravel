@@ -1,5 +1,5 @@
 'use strict';
-MetronicApp.controller('PedidoEditarController', function($rootScope, $scope, $filter, $http, $timeout, ngTableParams, $state, FileUploader) {
+MetronicApp.controller('PedidoEditarController', function($rootScope, $scope, $filter, $http, $timeout, ngTableParams, $state, FileUploader, localStorageService) {
     $scope.$on('$viewContentLoaded', function() {   
         // initialize core components
         Metronic.initAjax();
@@ -13,7 +13,7 @@ MetronicApp.controller('PedidoEditarController', function($rootScope, $scope, $f
 
 		$scope.object_cadastro = {
 			id : "" ,
-			status : '',
+			status : "",
 			finalizado : '',
 			tipo_pagamento : '',
 			valor_minimo : '',
@@ -26,11 +26,19 @@ MetronicApp.controller('PedidoEditarController', function($rootScope, $scope, $f
 
 		$scope.object_cadastro.andamentos = [];
     };
-    
+
+	$scope.usuario = localStorageService.get('AuthUsuario');
+
     $scope.loading = true;
-    $scope.painel_1 = true;
+	$scope.painel_1 = false;
 	$scope.painel_2 = false;
 	$scope.painel_3 = false;
+	$scope.painel_4 = false;
+	if($scope.usuario.perfil != 2)
+    	$scope.painel_1 = true;
+	else
+		$scope.painel_4 = true;
+
 	
 	 var servico = false, cidade = false;
 	 
@@ -78,8 +86,32 @@ MetronicApp.controller('PedidoEditarController', function($rootScope, $scope, $f
     				allowClear: true
     			});    			
     			
-				$("#cidades").select2("val", $scope.object_cadastro.idcidade); 
+				$("#cidades").select2("val", $scope.object_cadastro.idcidade);
 
+				if($scope.usuario.perfil == 2){
+					for(var i = 0; i < $scope.lista_cidades.length; i++){
+						if($scope.lista_cidades[i].id == $scope.object_cadastro.idcidade) {
+							$scope.show_cidade = $scope.lista_cidades[i].cidade+" ("+$scope.lista_cidades[i].estado+")";
+							break;
+						}
+					}
+
+					//$scope.show_diligencias
+					$scope.show_diligencias = "";
+					for(var i = 0; i < $scope.object_cadastro.diligencias.length; i++){
+						console.log($scope.object_cadastro.diligencias[i]);
+						for(var w = 0; w < $scope.lista_diligencias.length; w++){
+							if($scope.lista_diligencias[w].id == $scope.object_cadastro.diligencias[i]) {
+								console.log($scope.lista_diligencias[w]);
+								$scope.show_diligencias += $scope.lista_diligencias[w].nome+", ";
+								break;
+							}
+						}
+					}
+					if($scope.show_diligencias.length > 0)
+						$scope.show_diligencias = $scope.show_diligencias.substr(0, $scope.show_diligencias.length -2);
+				}
+				
     			$scope.loading = false;
     		}).error(function(data, status, headers, config) {
     			$scope.loading = false;
@@ -105,10 +137,12 @@ MetronicApp.controller('PedidoEditarController', function($rootScope, $scope, $f
     	$scope.painel_1 = false;
     	$scope.painel_2 = false;
     	$scope.painel_3 = false;
+    	$scope.painel_4 = false;
 
     	$("#detalhes").removeClass("active");
     	$("#candidatos").removeClass("active");
     	$("#andamentos").removeClass("active");
+    	$("#detalhes_pedido").removeClass("active");
 
     	if(id == 1){
     		$scope.painel_1 = true;
@@ -121,6 +155,10 @@ MetronicApp.controller('PedidoEditarController', function($rootScope, $scope, $f
     	if(id == 3){
     		$scope.painel_3 = true;
     		$("#andamentos").addClass("active");
+    	}
+		if(id == 4){
+    		$scope.painel_4 = true;
+    		$("#detalhes_pedido").addClass("active");
     	}
 
     };
@@ -142,6 +180,21 @@ MetronicApp.controller('PedidoEditarController', function($rootScope, $scope, $f
          });
 	};
 	
+    $scope.salvarPendente = function(){
+		$scope.object_cadastro.status = 2;
+		$scope.salvar();
+	};
+
+    $scope.salvarFinalizado = function(){
+		bootbox.confirm("Deseja realmente finalizar seu pedido? Esta ação fará com que seu pedido seja considerado concluído e nenhum andamento podera ser adicionado ao mesmo.", function(result) {
+			if(result){
+				$scope.object_cadastro.status = 5;
+				$scope.object_cadastro.finalizado = 1;
+				$scope.salvar();
+			}
+		});
+	};
+
     $scope.salvar = function(){
 		console.log($scope.object_cadastro);
 		if($scope.object_cadastro.idcidade == "Object")
@@ -149,6 +202,7 @@ MetronicApp.controller('PedidoEditarController', function($rootScope, $scope, $f
 		if(!$scope.object_cadastro.id){
 			$http.post('/pedido/',$scope.object_cadastro).success(function(data){
 				$scope.object_cadastro.id = data.retorno.id;
+				$scope.object_cadastro.status = data.retorno.status;
 				exibirMensagemAlert($("#mensagem-status"), 'Cadastrado com sucesso', 'success', 'check');
 				$scope.cadastar = false;
 			}).error(function(data, status, headers, config) {
@@ -180,10 +234,21 @@ MetronicApp.controller('PedidoEditarController', function($rootScope, $scope, $f
 				status: ''
 		};
 	};
+
+	$scope.cadastrar_cancelar = function(){
+		$scope.cadastrar_andamento = false;
+		$scope.object_andamento = {
+			id:"",
+			idpedido: "",
+			comentario: '',
+			status: ''
+		};
+	};
+
 	$scope.salvar_andamento = function(){
 		$scope.object_andamento.idpedido = $scope.object_cadastro.id;
 		console.log($scope.object_andamento);
-		if($scope.object_andamento) {
+		if($scope.object_andamento.id == "") {
 			$http.post('/andamento', $scope.object_andamento).success(function (data) {
 				if ($scope.object_cadastro.andamentos.indexOf($scope.object_andamento) < 0) {
 					$scope.object_cadastro.andamentos.unshift(data.retorno);
@@ -197,6 +262,9 @@ MetronicApp.controller('PedidoEditarController', function($rootScope, $scope, $f
 					idpedido: '',
 					id: ''
 				};
+
+				$scope.object_cadastro.status = data.retorno.status;
+				$scope.salvar();
 
 				exibirMensagemAlert($("#mensagem-status"), 'Andamento cadastrado com sucesso', 'success', 'check');
 				$scope.cadastrar_andamento = false;
@@ -218,6 +286,9 @@ MetronicApp.controller('PedidoEditarController', function($rootScope, $scope, $f
 					id: ''
 				};
 
+				$scope.object_cadastro.status = data.retorno.status;
+				$scope.salvar();
+
 				exibirMensagemAlert($("#mensagem-status"), 'Andamento cadastrado com sucesso', 'success', 'check');
 				$scope.cadastrar_andamento = false;
 			}).error(function (data, status, headers, config) {
@@ -232,8 +303,11 @@ MetronicApp.controller('PedidoEditarController', function($rootScope, $scope, $f
 		if(index.id) {
 			$http.put('/candidato/'+index.id, index).success(function (data) {
 				if ($scope.object_cadastro.candidatos.indexOf(index) != null) {
-					$scope.object_cadastro.candidatos[$scope.object_cadastro.candidatos.indexOf(index)] = data.candidato;
+					$scope.object_cadastro.candidatos[$scope.object_cadastro.candidatos.indexOf(index)].aprovado = data.candidato.aprovado;
 				}
+
+				$scope.object_cadastro.status = 3;
+				$scope.salvar();
 
 				exibirMensagemAlert($("#mensagem-status"), 'Proposta aprovado com sucesso', 'success', 'check');
 			}).error(function (data, status, headers, config) {

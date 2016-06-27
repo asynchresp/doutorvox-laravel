@@ -42,7 +42,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html"><img src="imagens/logo.png" class="img-responsive" alt="Doutor Vox App" /></a>
+                <a class="navbar-brand" href="/site"><img src="imagens/logo.png" class="img-responsive" alt="Doutor Vox App" /></a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->

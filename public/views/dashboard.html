@@ -11,13 +11,13 @@
 <!-- BEGIN MAIN CONTENT -->
 <div ng-controller="DashboardController" class="margin-top-10">
 	<div class="row">
-		<div class="col-md-6 col-sm-12">
+		<div class="col-md-6 col-sm-12" ng-show="usuario.pefil == 0">
 			<!-- BEGIN PORTLET-->
 			<div class="portlet light ">
 				<div class="portlet-title">
 					<div class="caption caption-md">
 						<i class="icon-bar-chart font-green-haze hide"></i>
-						<span class="caption-subject font-green-haze bold uppercase">Últimos advogados cadastrados</span>
+						<span class="caption-subject font-green-haze bold uppercase">Últimos Advogados Cadastrados</span>
 					</div>
 				</div>
 				<div class="portlet-body">
@@ -53,7 +53,7 @@
 				<div class="portlet-title">
 					<div class="caption caption-md">
 						<i class="icon-bar-chart font-green-haze hide"></i>
-						<span class="caption-subject font-green-haze bold uppercase">Últimos pedidos de cadastro</span>
+						<span class="caption-subject font-green-haze bold uppercase">Últimos Pedidos Cadastros</span>
 					</div>
 				</div>
 				<div class="portlet-body">
@@ -61,7 +61,7 @@
 					<thead>
 					<tr>
 						<th>Cód Pedido </th>
-						<th>Empresa</th>
+						<th>Empresa/Cliente</th>
 						<th>Cidade</th>
 						<th>Ações </th>
 					</tr>
