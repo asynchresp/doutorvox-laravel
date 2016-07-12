@@ -34,11 +34,7 @@ class MobilePedidoController extends Controller
         try {
             $idUsuario = $request->input('idusuario');
 
-            // andamento pode ser 1 ou 0, se for 0, buscar pedidos novos, senao pedidos em andamento(1)
-            $statusPedido = $request->input('andamento');
-
             $usuario = $this->usuario->find($idUsuario);
-
 
             if($usuario)
             {
@@ -47,10 +43,28 @@ class MobilePedidoController extends Controller
                     ->with('candidatos')
                     ->with('avaliacoes')
                     ->with('cidade')
-                    ->where('idusuario_cadastro',$idUsuario)
-                    ->where('status',$statusPedido)->get();
+                    ->where('idusuario_cadastro',$idUsuario)->get();
+
+                foreach($pedidos as $p){
+                    $response[] = [
+                        'id' => (int) $p->id,
+                        'status' => $p->status,
+                        'valor_minimo' => $p->valor_minimo,
+                        'valor_maximo' => $p->valor_maximo,
+                        'descricao' => $p->descricao,
+                        'idcidade' => $p->idcidade,
+                        'idusuario_cadastro' => $p->idusuario_cadastro,
+                        'nome_empresa' => $p->usuarioCadastrouPedido->nome,
+                        'finalizado' => $p->finalizado,
+                        'tipo_pagamento' => $p->tipo_pagamento,
+                        'diligencias' => $p->diligencias,
+                        'andamentos' => $p->andamentos,
+                        'candidatos' => $p->candidatos
+                    ];
+                }
+
                 return  response()->json(array('status' => 1,
-                    'pedidos' => $pedidos,
+                    'pedidos' => $response,
                     'debug'=>"ok",
                     'msg' => ''))
                     ->header('Content-Type','application/json');
@@ -69,6 +83,8 @@ class MobilePedidoController extends Controller
                 ->header('Content-Type','application/json');
         }
     }
+
+
     public function aprovarPedido(Request $request)
     {
 
@@ -93,6 +109,7 @@ class MobilePedidoController extends Controller
                 ->header('Content-Type','application/json');
         }
     }
+
     public function deletarPedido(Request $request)
     {
 
@@ -117,6 +134,70 @@ class MobilePedidoController extends Controller
                 'debug'=>$e->getMessage(),
                 'msg' => 'Falha na conexão com o banco de dados'))
                 ->header('Content-Type','application/json');
+        }
+    }
+
+    public function registrar(Request $request)
+    {
+        try{
+            $aDados = $request->all();
+
+            $usuario = \App\Usuario::find($aDados['idusuario_cadastro']);
+
+            if($usuario->tipo != 3){
+                $pedido = $this->pedido->where('idusuario_cadastro','=',$aDados['idusuario_cadastro'])
+                            ->where('finalizado', '=', '0')
+                            ->take(1)->get();
+                if(isset($pedido[0])){
+                    return  response()->json(array('success' => false, 'msg' => "Você já possui um pedido em aberto, vá na página inicial em \"Pedido\" e finalize seus pedidos em aberto.", 200));
+                }
+            }
+
+            if(is_array($aDados['idcidade']) && $aDados['idcidade'] != null)
+                $aDados['idcidade'] = $aDados['idcidade']['id'];
+            $aDados['finalizado'] = false;
+            if(!isset($aDados['status']))
+                $aDados['status'] = 2;
+            $aDados['tipo_pagamento'] = 0;
+            $aDados['idusuario_cadastro'] = $aDados['idusuario_cadastro'];
+            $aDados['idusuario_alteracao'] = $aDados['idusuario_cadastro'];
+
+            $pedido = $this->pedido->create($aDados);
+            if(isset($aDados['diligencia'])){
+                if(str_contains($aDados['diligencia'], ","))
+                    $aDiligencias = explode(",", $aDados['diligencia']);
+                else
+                    $aDiligencias[] = $aDados['diligencia'];
+                $pedido->diligencias()->sync($aDiligencias);
+            }
+            $pedido->save();
+
+            return  response()->json(array('success' => true,'retorno' => $pedido->toArray(), 200));
+        }catch (Exception $e){
+            return  response()->json(array('success' => false), 400);
+        }
+    }
+
+    public function diligencia()
+    {
+        $response = null;
+        try{
+            $statusCode = 200;
+
+            $diligencias = \App\Diligencia::where('status','=','1')->get();
+
+            foreach($diligencias as $model){
+
+                $response[] = [
+                    'id' => (int) $model->id,
+                    'nome' => $model->nome
+                ];
+            }
+
+        }catch (Exception $e){
+            $statusCode = 400;
+        }finally{
+            return response()->json($response, $statusCode);
         }
     }
 }

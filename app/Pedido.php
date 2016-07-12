@@ -8,7 +8,7 @@ class Pedido extends Model
 {
 
     protected $fillable =  ['status','valor_minimo','valor_maximo','idcidade',
-        'idusuario_cadastro','idusuario_alteracao','finalizado','tipo_pagamento'];
+        'idusuario_cadastro','idusuario_alteracao','finalizado','tipo_pagamento', 'descricao'];
 
     public function usuarioCadastrouPedido()
     {

@@ -49,10 +49,11 @@ class MobileUsuarioController extends Controller
 
     public function registrar(Request $request)
     {
+        $aDados = $request->all();
 
         // tratar primeiramente os parametros relacioandos a cidade
-        $cidade = $request->input('cidade');
-        $estado = $request->input('estado');
+        $cidade = $aDados['cidade'];
+        $estado = $aDados['estado'];
 
         if($cidade != "" && $estado != "")
         {
@@ -90,7 +91,7 @@ class MobileUsuarioController extends Controller
             $validator =  Validator::make($request->all(), [
                 'nome' => 'required|max:255',
                 'email' => 'required|email|max:255|unique:usuarios',
-                'cpf_cnpj' => 'required|min:11|max:11',
+                'cpf_cnpj' => 'required|min:14|max:18',
                 'logradouro' => 'required',
                 'bairro' => 'required',
                 'cep' => 'required',
@@ -122,6 +123,33 @@ class MobileUsuarioController extends Controller
             {
                 // nao passou na validação
                 return response()->json(array('status' => 0, 'debug' => 'ERRO-VALIDAR','msg'=>$validator->errors()->all()))->header('Content-Type','application/json');
+            }
+        }
+        else
+        {
+            return response()->json(array('status' => 0, 'debug' => 'Não enviou cidade nem estado','msg'=>'Falha na comunicação com o servidor.'))->header('Content-Type','application/json');
+        }
+    }
+
+    public function verificar_email(Request $request)
+    {
+        $aDados = $request->all();
+
+        // tratar primeiramente os parametros relacioandos a cidade
+        $email = $aDados['email'];
+        if($email != "")
+        {
+            $usuario = $this->usuario->where('email','=',$email)->take(1)->get();
+            if(!isset($usuario[0])){
+                return response()->json(array(
+                    'status' => 1,
+                    'msg' => ''))
+                    ->header('Content-Type','application/json');
+            } else {
+                return response()->json(array(
+                    'status' => 0,
+                    'msg' => 'Este e-mail não e válido ou já esta sendo usado.'))
+                    ->header('Content-Type','application/json');
             }
         }
         else

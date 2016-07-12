@@ -64,7 +64,15 @@
 									<div class="form-group" >
 										<label>Código do Pedido : *</label>
 										<input type="text" class="form-control imp" placeholder="id" ng-model="object_cadastro.id" disabled="disabled">
-									</div>		
+									</div>
+
+
+									<div class="form-group" >
+										<label>Descrição : *</label>
+											<textarea class="form-control imp" placeholder="Descrição do Pedido" ng-model="object_cadastro.descricao" >
+
+											</textarea>
+									</div>
 									
 									<div class="form-inline form-group">
 										<div class="form-group">
@@ -242,6 +250,11 @@
 										<div class="form-group" >
 											<label>Código do Pedido : *</label>
 											<input type="text" class="form-control imp" placeholder="id" ng-model="object_cadastro.id" disabled="disabled">
+										</div>
+
+										<div class="form-group" >
+											<label>Descrição : *</label>
+											<textarea disabled="disabled" class="form-control imp" ng-model="object_cadastro.descricao" >{{object_cadastro.descricao}}</textarea>
 										</div>
 
 										<div class="form-group">

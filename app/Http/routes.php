@@ -38,15 +38,21 @@ Route::group(['prefix' => 'mobile'], function () {
     Route::group(['prefix' => 'usuario'], function () {
         Route::post('login', 'Mobile\MobileUsuarioController@login');
         Route::post('registrar', 'Mobile\MobileUsuarioController@registrar');
+        Route::post('verificar_email', 'Mobile\MobileUsuarioController@verificar_email');
     });
     Route::group(['prefix' => 'noticia'], function () {
         Route::post('obter_noticias', 'Mobile\MobileNoticiaController@obterNoticias');
     });
     Route::group(['prefix' => 'pedido'], function () {
+        Route::post('registrar', 'Mobile\MobilePedidoController@registrar');
         Route::post('obter_pedidos_escritorio', 'Mobile\MobilePedidoController@obterPedidosDoEscritorio');
         Route::post('deletar_pedido', 'Mobile\MobilePedidoController@deletarPedido');
         Route::post('aprovar_pedido', 'Mobile\MobilePedidoController@aprovarPedido');
     });
+
+    Route::get('advogado', 'UsuariosController@advogado');
+    Route::get('cidade', 'CidadesController@index');
+    Route::get('diligencia', 'Mobile\MobilePedidoController@diligencia');
 });
 
 
@@ -97,7 +103,6 @@ Route::group(['middleware' => 'web'], function () {
     Route::put('usuario_senha/{id}', 'UsuariosController@usuario_senha');
     Route::post('UploadImagePerfil/', 'UsuariosController@UploadImagePerfil');
 
-    Route::get('advogado', 'UsuariosController@advogado');
     Route::get('advogado_dashboard', 'UsuariosController@advogadoDashboard');
     Route::get('pedido_dashboard', 'PedidosController@pedidoDashboard');
     Route::get('ultimos_pedidos', 'PedidosController@ultimos_pedidos');

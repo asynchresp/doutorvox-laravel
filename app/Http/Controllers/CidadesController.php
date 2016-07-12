@@ -35,9 +35,7 @@ class CidadesController extends Controller
                 $response[] = [
                     'id' => (int) $cidade->id,
                     'cidade' => $cidade->cidade,
-                    'estado' => $cidade->estado,
-                    'ativo' => $cidade->ativo,
-                    'usuarios' => $cidade->usuarios
+                    'estado' => $cidade->estado
                 ];
             }
 

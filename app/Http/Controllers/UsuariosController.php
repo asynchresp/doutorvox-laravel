@@ -271,8 +271,8 @@ class UsuariosController extends Controller
                 'usuarios'  => []
             ];
 
-            $data = $this->usuario->orderBy('id','desc')->get()->where('tipo',0);
-
+            $data = $this->usuario->where('tipo', 2)->orderBy('id','desc')->get();
+            
             foreach($data as $model){
 
                 $response['usuarios'][] = [
